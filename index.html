@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Claims Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#161b1f;--panel:#1d2429;--line:#3a464e;--gold:#c9a24a;--ink:#e6e1d0;--dim:#93a0a6}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Source Sans 3",system-ui,sans-serif}
+#app{display:flex;height:100%}
+#map{flex:1;position:relative;min-width:0;box-shadow:inset 0 0 120px rgba(0,0,0,.55)}
+canvas{position:absolute;inset:0;display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+#msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font-family:Cinzel,serif;letter-spacing:.05em;text-align:center;padding:2rem;pointer-events:none}
+#tip{position:absolute;pointer-events:none;background:rgba(15,19,22,.92);border:1px solid var(--line);padding:.3rem .6rem;font-size:13px;display:none;white-space:nowrap}
+#panel{width:320px;background:var(--panel);border-left:2px solid var(--line);display:flex;flex-direction:column;min-height:0}
+#panel header{padding:1rem 1.1rem .8rem;border-bottom:1px solid var(--line)}
+h1{font:700 1.25rem Cinzel,serif;color:var(--gold);margin:0;letter-spacing:.04em}
+h2{font:600 1.15rem Cinzel,serif;margin:.6rem 0 .3rem}
+.sub,.hint{color:var(--dim);margin:.3rem 0 0;font-size:13px}
+#info{padding:.9rem 1.1rem;border-bottom:1px solid var(--line);overflow:auto;max-height:46%}
+.banner{height:8px;border:1px solid rgba(0,0,0,.5)}
+dl{margin:.5rem 0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem}
+dt{color:var(--dim)}dd{margin:0}
+#info p.desc{margin:.5rem 0 0}
+#tools{padding:.7rem 1.1rem;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.4rem}
+#tools label{flex-basis:100%;font-size:13px;color:var(--dim)}
+label{display:block;font-size:13px;color:var(--dim);margin-top:.5rem}
+input,textarea{width:100%;background:#12171a;border:1px solid var(--line);color:var(--ink);padding:.35rem .5rem;font:inherit}
+input[type=color]{height:32px;padding:2px}
+input[type=checkbox]{width:auto}
+button{background:#2a343b;color:var(--ink);border:1px solid var(--line);padding:.35rem .7rem;font:inherit;cursor:pointer}
+button:hover{border-color:var(--gold)}button.on{background:var(--gold);color:#161b1f}
+#legend{overflow:auto;flex:1;min-height:0}
+.row{display:flex;align-items:center;gap:.6rem;padding:.4rem 1.1rem;cursor:pointer;border-left:3px solid transparent}
+.row:hover{background:#252f36}.row.on{background:#2b3740;border-left-color:var(--gold)}
+.row i{width:16px;height:16px;border:1px solid rgba(0,0,0,.6);flex:none}
+.row b{margin-left:auto;color:var(--dim);font-weight:400}
+:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+@media(max-width:760px){#app{flex-direction:column}#map{flex:1 1 55%}#panel{width:auto;flex:1 1 45%;border-left:0;border-top:2px solid var(--line)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="map"><canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div></div>
+  <aside id="panel">
+    <header><h1 id="ttl"></h1><p class="sub" id="sub"></p></header>
+    <section id="info"></section>
+    <section id="tools" hidden></section>
+    <section id="legend"></section>
+  </aside>
+</div>
+<input type="file" id="file" accept=".json" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+if (!window.d3) document.getElementById("msg").textContent = "Couldn't load the d3 library from cdnjs. It may be blocked or you may be offline.";
+</script>
+<script>
+/* ---------- CONFIG ---------- */
+const CONFIG = {
+  title: "Claims of the World",
+  claimsUrl: "claims.json",   // the file you edit & re-upload; sits next to this page
+  // Each setting is a list; the first URL that works is used.
+  countriesUrl: [
+    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json",
+    "https://unpkg.com/world-atlas@2/countries-50m.json"
+  ],
+  // Optional finer subdivisions (states/provinces). Countries not in this file stay whole.
+  // Swap "50m" for "10m" for every country's provinces (much bigger download).
+  statesUrl: [
+    "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_50m_admin_1_states_provinces.geojson",
+    "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_1_states_provinces.geojson"
+  ]
+};
+/* Minimal TopoJSON -> GeoJSON decoder (Polygon / MultiPolygon), so no extra library is needed */
+function topoFeatures(topo, obj) {
+  const tf = topo.transform;
+  const arcs = topo.arcs.map(a => { let x = 0, y = 0;
+    return a.map(p => { if (!tf) return p.slice(); x += p[0]; y += p[1]; return [x*tf.scale[0] + tf.translate[0], y*tf.scale[1] + tf.translate[1]]; }); });
+  const ring = r => { const out = [];
+    r.forEach((i, j) => { const a = i < 0 ? arcs[~i].slice().reverse() : arcs[i];
+      for (let n = j ? 1 : 0; n < a.length; n++) out.push(a[n]); });
+    return out; };
+  const geom = g => g.type === "Polygon" ? { type: "Polygon", coordinates: g.arcs.map(ring) }
+    : g.type === "MultiPolygon" ? { type: "MultiPolygon", coordinates: g.arcs.map(p => p.map(ring)) } : null;
+  return obj.geometries.map(g => ({ type: "Feature", id: g.id, properties: g.properties || {}, geometry: geom(g) }));
+}
+async function getJSON(urls) {
+  let err;
+  for (const u of [].concat(urls)) {
+    try { const r = await fetch(u); if (!r.ok) throw new Error("HTTP " + r.status + " for " + u); return await r.json(); }
+    catch (e) { err = e; }
+  }
+  throw err;
+}
+const DEFAULT = { factions: {
+  demo: { name: "Example Republic", color: "#4a7fb5", ruler: "President Example", capital: "Capital City", gov: "Republic", bloc: "", desc: "Replace this with your first faction. Add ?edit to the page URL to edit." }
+}, claims: {}, labels: {} };
+const FIELDS = [["name","Name"],["color","Colour"],["ruler","Leader"],["capital","Capital"],["gov","Government"],["bloc","Alliance / bloc"],["desc","About"]];
+const OCEAN = "#46697c", LAND = "#77786a", LAND_LINE = "#5c5d50";
+
+/* ---------- state ---------- */
+const $ = id => document.getElementById(id);
+const EDIT = new URLSearchParams(location.search).has("edit");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cv = $("cv"), ctx = cv.getContext("2d");
+let data, regions = [], labels = [], cur = null, picked = null, hover = null;
+let t = d3.zoomIdentity, cw = 0, ch = 0, dpr = 1, k0 = 1, moved = false, sx = 0, sy = 0;
+let wholeCountry = false, placing = false, raf;
+const proj = d3.geoEquirectangular().fitExtent([[0,0],[2000,1000]], {type:"Sphere"});
+const gp = d3.geoPath(proj);
+const zoom = d3.zoom().on("zoom", e => { t = e.transform; draw(); });
+const sel = d3.select(cv).call(zoom).on("dblclick.zoom", null);
+
+/* ---------- data ---------- */
+const norm = d => { d.factions ||= {}; d.claims ||= {}; d.labels ||= {}; return d; };
+async function loadClaims() {
+  let d = DEFAULT;
+  try { const r = await fetch(CONFIG.claimsUrl + "?v=" + Date.now()); if (r.ok) d = await r.json(); } catch (e) {}
+  if (EDIT) { try { const s = localStorage.getItem("claimsDraft"); if (s) d = JSON.parse(s); } catch (e) {} }
+  return norm(JSON.parse(JSON.stringify(d)));
+}
+function mk(f, key, name, country) {
+  const d = gp(f); if (!d) return null;
+  const b = gp.bounds(f); let c = gp.centroid(f);
+  if (!isFinite(c[0])) c = [(b[0][0]+b[1][0])/2, (b[0][1]+b[1][1])/2];
+  return { key, name, country, p: new Path2D(d), b, c, a: gp.area(f) || 1 };
+}
+async function init() {
+  $("ttl").textContent = CONFIG.title;
+  $("sub").textContent = EDIT ? "Edit mode. Export claims.json when done." : "Drag to pan, scroll to zoom, click a territory.";
+  try {
+    const [w, st, d] = await Promise.all([
+      getJSON(CONFIG.countriesUrl),
+      getJSON(CONFIG.statesUrl).catch(() => null),
+      loadClaims()
+    ]);
+    data = d;
+    const states = st ? st.features.filter(f => f.properties.admin !== "Antarctica") : [];
+    const have = new Set(states.map(f => f.properties.admin));
+    topoFeatures(w, w.objects.countries)
+      .filter(f => f.properties.name !== "Antarctica" && !have.has(f.properties.name))
+      .forEach(f => regions.push(mk(f, "c:" + f.properties.name, f.properties.name, f.properties.name)));
+    states.forEach(f => { const p = f.properties;
+      regions.push(mk(f, "s:" + (p.adm1_code || p.name + p.admin), p.name + ", " + p.admin, p.admin)); });
+    regions = regions.filter(Boolean);
+    $("msg").style.display = "none";
+  } catch (e) {
+    console.error(e);
+    $("msg").innerHTML = "Couldn't load the map.<br><small>" + esc(e.message || e) + "</small><br><small>If you're viewing this inside a chat preview, open the file in your own browser or site instead; previews block outside downloads.</small>";
+    return;
+  }
+  if (EDIT) buildTools();
+  computeLabels(); renderLegend(); renderInfo(); resize();
+}
+
+/* ---------- labels ---------- */
+function computeLabels() {
+  labels = []; const g = {};
+  regions.forEach(r => { const f = data.claims[r.key]; if (f && data.factions[f]) (g[f] ||= []).push(r); });
+  for (const f in g) {
+    const L = g[f]; let A = 0, cx = 0, cy = 0;
+    L.forEach(r => { A += r.a; cx += r.c[0]*r.a; cy += r.c[1]*r.a; }); cx /= A; cy /= A;
+    let best = L[0], bd = Infinity;
+    L.forEach(r => { const d = (r.c[0]-cx)**2 + (r.c[1]-cy)**2; if (d < bd) { bd = d; best = r; } });
+    let p = best.c; const m = data.labels[f]; if (m) { const q = proj(m); if (q) p = q; }
+    const n = data.factions[f].name.toUpperCase();
+    labels.push({ n, x: p[0], y: p[1], s: Math.min(36, Math.max(2, Math.sqrt(A)*1.5/n.length)) });
+  }
+}
+
+/* ---------- drawing ---------- */
+function draw() { cancelAnimationFrame(raf); raf = requestAnimationFrame(paint); }
+function paint() {
+  if (!regions.length) return;
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.fillStyle = OCEAN; ctx.fillRect(0,0,cw,ch);
+  ctx.setTransform(dpr*t.k,0,0,dpr*t.k,dpr*t.x,dpr*t.y);
+  const [vx0,vy0] = t.invert([0,0]), [vx1,vy1] = t.invert([cw,ch]), shade = {};
+  const vis = r => !(r.b[1][0]<vx0 || r.b[0][0]>vx1 || r.b[1][1]<vy0 || r.b[0][1]>vy1);
+  ctx.lineWidth = .6 / t.k; ctx.lineJoin = "round";
+  for (const r of regions) {
+    if (!vis(r)) continue;
+    const id = data.claims[r.key], f = data.factions[id];
+    ctx.fillStyle = f ? f.color : LAND;
+    ctx.strokeStyle = f ? (shade[id] ||= d3.color(f.color).darker(1).formatHex()) : LAND_LINE;
+    ctx.fill(r.p); ctx.stroke(r.p);
+  }
+  if (cur && data.factions[cur]) {           // outline the selected faction
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.6 / t.k;
+    for (const r of regions) if (data.claims[r.key] === cur && vis(r)) ctx.stroke(r.p);
+  }
+  if (hover) { ctx.fillStyle = "rgba(255,255,255,.28)"; ctx.fill(hover.p); }
+  ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
+  for (const l of labels) {
+    if (l.s * t.k < 7 || l.x < vx0-200 || l.x > vx1+200 || l.y < vy0-100 || l.y > vy1+100) continue;
+    ctx.font = `700 ${l.s}px Cinzel, Georgia, serif`;
+    ctx.lineWidth = l.s * .16; ctx.strokeStyle = "rgba(0,0,0,.65)"; ctx.strokeText(l.n, l.x, l.y);
+    ctx.fillStyle = "#f4ecd2"; ctx.fillText(l.n, l.x, l.y);
+  }
+}
+function resize() {
+  const m = $("map"); dpr = window.devicePixelRatio || 1; cw = m.clientWidth; ch = m.clientHeight;
+  cv.width = cw*dpr; cv.height = ch*dpr;
+  k0 = Math.min(cw/2000, ch/1000);
+  zoom.extent([[0,0],[cw,ch]]).scaleExtent([k0, k0*40]).translateExtent([[0,0],[2000,1000]]);
+  sel.call(zoom.transform, d3.zoomIdentity.translate((cw-2000*k0)/2, (ch-1000*k0)/2).scale(k0));
+}
+let rz; new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => data && resize()); }).observe($("map"));
+
+/* ---------- interaction ---------- */
+function pick(mx, my) {
+  const [x, y] = t.invert([mx, my]); ctx.setTransform(1,0,0,1,0,0);
+  for (let i = regions.length-1; i >= 0; i--) {
+    const r = regions[i], b = r.b;
+    if (x<b[0][0] || x>b[1][0] || y<b[0][1] || y>b[1][1]) continue;
+    if (ctx.isPointInPath(r.p, x, y)) return r;
+  }
+  return null;
+}
+cv.onpointerdown = e => { sx = e.clientX; sy = e.clientY; };
+cv.onpointermove = e => {
+  if (!data) return;
+  const r = pick(e.offsetX, e.offsetY), tip = $("tip");
+  if (r !== hover) { hover = r; draw(); }
+  if (!r) { tip.style.display = "none"; return; }
+  const f = data.factions[data.claims[r.key]];
+  tip.innerHTML = `<b>${esc(r.name)}</b><br>${f ? esc(f.name) : "Unclaimed"}`;
+  tip.style.display = "block"; tip.style.left = Math.min(e.offsetX+14, cw-160) + "px"; tip.style.top = (e.offsetY+14) + "px";
+};
+cv.onpointerleave = () => { hover = null; $("tip").style.display = "none"; draw(); };
+cv.onclick = e => {
+  if (!data || Math.hypot(e.clientX-sx, e.clientY-sy) > 4) return;
+  const r = pick(e.offsetX, e.offsetY); if (!r) return;
+  if (EDIT) {
+    if (placing) { const [x,y] = t.invert([e.offsetX, e.offsetY]); data.labels[cur] = proj.invert([x,y]); placing = false; $("place").classList.remove("on"); return changed(); }
+    (wholeCountry ? regions.filter(x => x.country === r.country) : [r])
+      .forEach(x => { if (cur && data.factions[cur]) data.claims[x.key] = cur; else delete data.claims[x.key]; });
+    return changed();
+  }
+  picked = r; cur = data.claims[r.key] || null; renderInfo(); renderLegend(); draw();
+};
+
+/* ---------- panel ---------- */
+const count = id => Object.values(data.claims).filter(v => v === id).length;
+function renderInfo() {
+  const el = $("info"), f = cur && data.factions[cur];
+  if (EDIT) {
+    if (!f) { el.innerHTML = '<p class="hint">Eraser active: click territory to unclaim it. Pick a faction below to paint with it.</p>'; return; }
+    el.innerHTML = `<div class="banner" style="background:${esc(f.color)}"></div>` + FIELDS.map(([k,l]) =>
+      k === "desc" ? `<label>${l}<textarea data-k="${k}" rows="4">${esc(f[k])}</textarea></label>`
+                   : `<label>${l}<input data-k="${k}" ${k==="color"?'type="color"':""} value="${esc(f[k])}"></label>`).join("");
+    el.querySelectorAll("[data-k]").forEach(i => i.oninput = () => {
+      f[i.dataset.k] = i.value; if (i.dataset.k === "color") el.querySelector(".banner").style.background = i.value; changed(false); });
+    return;
+  }
+  if (!f) { el.innerHTML = picked ? `<h2>${esc(picked.name)}</h2><p class="hint">Unclaimed territory.</p>` : '<p class="hint">Click a claimed territory to see who holds it.</p>'; return; }
+  const rows = [["ruler","Leader"],["capital","Capital"],["gov","Government"],["bloc","Bloc"]].filter(([k]) => f[k]);
+  el.innerHTML = `<div class="banner" style="background:${esc(f.color)}"></div><h2>${esc(f.name)}</h2>` +
+    (picked ? `<p class="hint">Selected: ${esc(picked.name)}</p>` : "") +
+    `<dl>${rows.map(([k,l]) => `<dt>${l}</dt><dd>${esc(f[k])}</dd>`).join("")}<dt>Holds</dt><dd>${count(cur)} territories</dd></dl>` +
+    (f.desc ? `<p class="desc">${esc(f.desc)}</p>` : "");
+}
+function renderLegend() {
+  const n = {}; Object.values(data.claims).forEach(v => n[v] = (n[v]||0) + 1);
+  const ids = Object.keys(data.factions).filter(i => EDIT || n[i]).sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
+  $("legend").innerHTML = (EDIT ? `<div class="row${cur?"":" on"}" data-id=""><i style="background:${LAND}"></i>Unclaimed / eraser</div>` : "") +
+    ids.map(i => `<div class="row${i===cur?" on":""}" data-id="${i}"><i style="background:${esc(data.factions[i].color)}"></i>${esc(data.factions[i].name)}<b>${n[i]||0}</b></div>`).join("");
+  $("legend").querySelectorAll(".row").forEach(r => r.onclick = () => {
+    cur = r.dataset.id || null; picked = null; renderInfo(); renderLegend(); draw(); if (cur && !EDIT) zoomTo(cur); });
+}
+function zoomTo(id) {
+  const L = regions.filter(r => data.claims[r.key] === id); if (!L.length) return;
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  L.forEach(r => { x0 = Math.min(x0,r.b[0][0]); y0 = Math.min(y0,r.b[0][1]); x1 = Math.max(x1,r.b[1][0]); y1 = Math.max(y1,r.b[1][1]); });
+  const k = Math.max(k0, Math.min(Math.min(cw/(x1-x0), ch/(y1-y0)) * .6, k0*40));
+  sel.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(cw/2, ch/2).scale(k).translate(-(x0+x1)/2, -(y0+y1)/2));
+}
+
+/* ---------- edit tools ---------- */
+function changed(full = true) {
+  computeLabels(); draw(); renderLegend();
+  try { localStorage.setItem("claimsDraft", JSON.stringify(data)); } catch (e) {}
+}
+function buildTools() {
+  const el = $("tools"); el.hidden = false;
+  el.innerHTML = `<label><input type="checkbox" id="whole"> Paint whole country at once</label>
+    <button id="add">New faction</button><button id="del">Delete faction</button>
+    <button id="place">Place label</button><button id="unlab">Reset label</button>
+    <button id="exp">Export claims.json</button><button id="imp">Import</button><button id="fresh">Reload from file</button>`;
+  $("whole").onchange = e => wholeCountry = e.target.checked;
+  $("add").onclick = () => { const id = "f" + Date.now().toString(36);
+    data.factions[id] = { name: "New faction", color: d3.hsl(Math.random()*360, .5, .5).formatHex(), ruler: "", capital: "", gov: "", bloc: "", desc: "" };
+    cur = id; renderInfo(); changed(); };
+  $("del").onclick = () => { if (!cur || !confirm("Delete this faction and unclaim its land?")) return;
+    for (const k in data.claims) if (data.claims[k] === cur) delete data.claims[k];
+    delete data.factions[cur]; delete data.labels[cur]; cur = null; renderInfo(); changed(); };
+  $("place").onclick = e => { if (!cur) return; placing = !placing; e.target.classList.toggle("on", placing); };
+  $("unlab").onclick = () => { if (cur) { delete data.labels[cur]; changed(); } };
+  $("exp").onclick = () => { const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type: "application/json"}));
+    a.download = "claims.json"; a.click(); };
+  $("imp").onclick = () => $("file").click();
+  $("file").onchange = async e => { try { data = norm(JSON.parse(await e.target.files[0].text())); cur = null; renderInfo(); changed(); } catch (x) { alert("That file isn't valid claims JSON."); } };
+  $("fresh").onclick = async () => { if (!confirm("Discard your draft and reload claims.json?")) return;
+    try { localStorage.removeItem("claimsDraft"); } catch (e) {} data = await loadClaims(); cur = null; renderInfo(); changed(); };
+}
+
+init();
+</script>
+</body>
+</html>
