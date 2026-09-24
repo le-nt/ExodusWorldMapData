@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>World Claims Map</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<title>Exodus World Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#161b1f;--panel:#1d2429;--line:#3a464e;--gold:#c9a24a;--ink:#e6e1d0;--dim:#93a0a6}
+:root{--bg:#0a0912;--panel:#0f0d1b;--line:#3b2a63;--gold:#c58bff;--ink:#e9e6f5;--dim:#9a94b8}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Source Sans 3",system-ui,sans-serif}
 #app{display:flex;height:100%}
@@ -16,11 +16,11 @@ canvas:active{cursor:grabbing}
 #msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font-family:Cinzel,serif;letter-spacing:.05em;text-align:center;padding:2rem;pointer-events:none}
 #tip{position:absolute;pointer-events:none;background:rgba(15,19,22,.92);border:1px solid var(--line);padding:.3rem .6rem;font-size:13px;display:none;white-space:nowrap}
 #panel{width:320px;background:var(--panel);border-left:2px solid var(--line);display:flex;flex-direction:column;min-height:0}
-#panel header{padding:1rem 1.1rem .8rem;border-bottom:1px solid var(--line)}
-h1{font:700 1.25rem Cinzel,serif;color:var(--gold);margin:0;letter-spacing:.04em}
-h2{font:600 1.15rem Cinzel,serif;margin:.6rem 0 .3rem}
+#panel header{padding:1rem 1.1rem .8rem;border-bottom:2px solid #7a3fc4;background:repeating-linear-gradient(0deg,rgba(150,80,255,.18) 0 1px,transparent 1px 12px),repeating-linear-gradient(90deg,rgba(150,80,255,.18) 0 1px,transparent 1px 12px),linear-gradient(#1c0f38,#120b26)}
+h1{font:700 1.1rem Orbitron,sans-serif;color:#fff;margin:0;letter-spacing:.12em;text-transform:uppercase}
+h2{font:600 1.05rem Orbitron,sans-serif;letter-spacing:.06em;margin:.6rem 0 .3rem}
 .sub,.hint{color:var(--dim);margin:.3rem 0 0;font-size:13px}
-#info{padding:.9rem 1.1rem;border-bottom:1px solid var(--line);overflow:auto;max-height:46%}
+#info{padding:.9rem 1.1rem;border-bottom:1px solid var(--line)}
 .banner{height:8px;border:1px solid rgba(0,0,0,.5)}
 dl{margin:.5rem 0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem}
 dt{color:var(--dim)}dd{margin:0}
@@ -31,20 +31,31 @@ label{display:block;font-size:13px;color:var(--dim);margin-top:.5rem}
 input,textarea{width:100%;background:#12171a;border:1px solid var(--line);color:var(--ink);padding:.35rem .5rem;font:inherit}
 input[type=color]{height:32px;padding:2px}
 input[type=checkbox]{width:auto}
-button{background:#2a343b;color:var(--ink);border:1px solid var(--line);padding:.35rem .7rem;font:inherit;cursor:pointer}
+select{background:#12171a;border:1px solid var(--line);color:var(--ink);padding:.3rem .4rem;font:inherit}
+button{background:#241a3d;color:var(--ink);border:1px solid var(--line);padding:.35rem .7rem;font:inherit;cursor:pointer}
 button:hover{border-color:var(--gold)}button.on{background:var(--gold);color:#161b1f}
-#legend{overflow:auto;flex:1;min-height:0}
+button:disabled{opacity:.35;cursor:default;border-color:var(--line)}
+#panel{overflow-y:auto}
+#panel header{position:sticky;top:0;z-index:2}
+#legend{}
 .row{display:flex;align-items:center;gap:.6rem;padding:.4rem 1.1rem;cursor:pointer;border-left:3px solid transparent}
-.row:hover{background:#252f36}.row.on{background:#2b3740;border-left-color:var(--gold)}
+.row:hover{background:#1c1730}.row.on{background:#261c45;border-left-color:var(--gold)}
 .row i{width:16px;height:16px;border:1px solid rgba(0,0,0,.6);flex:none}
 .row b{margin-left:auto;color:var(--dim);font-weight:400}
 :focus-visible{outline:2px solid var(--gold);outline-offset:1px}
-@media(max-width:760px){#app{flex-direction:column}#map{flex:1 1 55%}#panel{width:auto;flex:1 1 45%;border-left:0;border-top:2px solid var(--line)}}
+@media(max-width:760px){#app{flex-direction:column}#map{flex:1 1 55%}#panel{width:auto;flex:1 1 45%;border-left:0;border-top:2px solid var(--line);min-height:0}}
+#scan{position:absolute;inset:0;pointer-events:none;z-index:5;mix-blend-mode:overlay;opacity:.5;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.65) 0px,rgba(0,0,0,.65) 1px,transparent 1px,transparent 3px);
+  background-size:100% 3px;animation:scanmove 8s linear infinite}
+#scan::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.18) 50%),linear-gradient(90deg,rgba(255,0,0,.02),rgba(0,255,0,.01),rgba(0,0,255,.02));
+  background-size:100% 4px,3px 100%}
+@keyframes scanmove{from{background-position:0 0}to{background-position:0 60px}}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="map"><canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div></div>
+  <div id="map"><canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div><div id="scan"></div></div>
   <aside id="panel">
     <header><h1 id="ttl"></h1><p class="sub" id="sub"></p></header>
     <section id="info"></section>
@@ -61,8 +72,11 @@ if (!window.d3) document.getElementById("msg").textContent = "Couldn't load the 
 <script>
 /* ---------- CONFIG ---------- */
 const CONFIG = {
-  title: "Claims of the World",
+  title: "Exodus World Map",
   claimsUrl: "claims.json",   // the file you edit & re-upload; sits next to this page
+  // Size of each claimable cell in map pixels (map is 2000px wide; 8 is roughly 1.4 degrees).
+  // Smaller = more, finer cells (slower). Changing it later re-numbers cells and breaks existing claims.
+  cellSize: 8,
   // Each setting is a list; the first URL that works is used.
   countriesUrl: [
     "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json",
@@ -100,38 +114,71 @@ const DEFAULT = { factions: {
   demo: { name: "Example Republic", color: "#4a7fb5", ruler: "President Example", capital: "Capital City", gov: "Republic", bloc: "", desc: "Replace this with your first faction. Add ?edit to the page URL to edit." }
 }, claims: {}, labels: {} };
 const FIELDS = [["name","Name"],["color","Colour"],["ruler","Leader"],["capital","Capital"],["gov","Government"],["bloc","Alliance / bloc"],["desc","About"]];
-const OCEAN = "#46697c", LAND = "#77786a", LAND_LINE = "#5c5d50";
+const OCEAN = "#0a1220", LAND = "#4b4f45";
 
 /* ---------- state ---------- */
 const $ = id => document.getElementById(id);
 const EDIT = new URLSearchParams(location.search).has("edit");
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv = $("cv"), ctx = cv.getContext("2d");
-let data, regions = [], labels = [], cur = null, picked = null, hover = null;
+let data, regions = [], parents = [], labels = [], cur = null, picked = null, hover = null;
 let t = d3.zoomIdentity, cw = 0, ch = 0, dpr = 1, k0 = 1, moved = false, sx = 0, sy = 0;
-let wholeCountry = false, placing = false, raf;
+let scope = "cell", placing = false, raf;
+let redacting = false, history = [], hIndex = -1, legendFilter = "";
 const proj = d3.geoEquirectangular().fitExtent([[0,0],[2000,1000]], {type:"Sphere"});
 const gp = d3.geoPath(proj);
+const PPD = proj([1,0])[0] - proj([0,0])[0];   // map pixels per degree (equirectangular: same for lon & lat)
+
+/* ---------- redacted areas ---------- */
+function redactGeom(rd) {   // circular zone in map-pixel space; screen position recomputed each draw via the current transform
+  const [mx, my] = proj([rd.lon, rd.lat]);
+  return { mx, my, r: rd.km / 111 * PPD };
+}
+function inRedaction(x, y) {   // x,y in map-pixel space
+  return data.redactions.some(rd => { const g = redactGeom(rd); return Math.hypot(x-g.mx, y-g.my) <= g.r; });
+}
 const zoom = d3.zoom().on("zoom", e => { t = e.transform; draw(); });
 const sel = d3.select(cv).call(zoom).on("dblclick.zoom", null);
 
 /* ---------- data ---------- */
-const norm = d => { d.factions ||= {}; d.claims ||= {}; d.labels ||= {}; return d; };
+const norm = d => { d.factions ||= {}; d.claims ||= {}; d.labels ||= {}; d.redactions ||= []; return d; };
 async function loadClaims() {
   let d = DEFAULT;
   try { const r = await fetch(CONFIG.claimsUrl + "?v=" + Date.now()); if (r.ok) d = await r.json(); } catch (e) {}
   if (EDIT) { try { const s = localStorage.getItem("claimsDraft"); if (s) d = JSON.parse(s); } catch (e) {} }
   return norm(JSON.parse(JSON.stringify(d)));
 }
+const G = CONFIG.cellSize;
+const hash = (a, b) => { let h = (Math.imul(a, 374761393) + Math.imul(b, 668265263)) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 function mk(f, key, name, country) {
   const d = gp(f); if (!d) return null;
   const b = gp.bounds(f); let c = gp.centroid(f);
   if (!isFinite(c[0])) c = [(b[0][0]+b[1][0])/2, (b[0][1]+b[1][1])/2];
-  return { key, name, country, p: new Path2D(d), b, c, a: gp.area(f) || 1 };
+  const P = { key, name, country, p: new Path2D(d), b, c, a: gp.area(f) || 1, cells: [] };
+  ctx.setTransform(1,0,0,1,0,0);
+  const seeds = [];   // one jittered seed per grid square, kept only if it lands on this territory
+  for (let gx = Math.floor(b[0][0]/G); gx <= Math.floor(b[1][0]/G); gx++)
+    for (let gy = Math.floor(b[0][1]/G); gy <= Math.floor(b[1][1]/G); gy++) {
+      const x = (gx + .15 + .7*hash(gx, gy)) * G, y = (gy + .15 + .7*hash(gy + 9973, gx - 7919)) * G;
+      if (ctx.isPointInPath(P.p, x, y)) seeds.push({ id: gx + "," + gy, x, y });
+    }
+  if (!seeds.length) seeds.push({ id: "0", x: c[0], y: c[1] });
+  const box = [b[0][0]-G, b[0][1]-G, b[1][0]+G, b[1][1]+G];
+  const vor = seeds.length > 1 ? d3.Delaunay.from(seeds, s => s.x, s => s.y).voronoi(box) : null;
+  seeds.forEach((s, i) => {
+    const poly = vor ? vor.cellPolygon(i) : [[box[0],box[1]],[box[2],box[1]],[box[2],box[3]],[box[0],box[3]]];
+    if (!poly) return;
+    const xs = poly.map(q => q[0]), ys = poly.map(q => q[1]);
+    P.cells.push({ key: key + "|" + s.id, name: name + " #" + (P.cells.length + 1), country, parent: P,
+      p: new Path2D("M" + poly.map(q => q.join(",")).join("L") + "Z"),
+      b: [[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], c: [s.x, s.y], a: P.a / seeds.length, v: Math.round(hash(Math.round(s.x*10), Math.round(s.y*10))*8)/8 - .5 });
+  });
+  return P;
 }
 async function init() {
   $("ttl").textContent = CONFIG.title;
-  $("sub").textContent = EDIT ? "Edit mode. Export claims.json when done." : "Drag to pan, scroll to zoom, click a territory.";
+  $("sub").textContent = EDIT ? "Super secret edit mod omgfggggg :3" : "Drag to pan, scroll to zoom, click a territory.";
   try {
     const [w, st, d] = await Promise.all([
       getJSON(CONFIG.countriesUrl),
@@ -143,33 +190,76 @@ async function init() {
     const have = new Set(states.map(f => f.properties.admin));
     topoFeatures(w, w.objects.countries)
       .filter(f => f.properties.name !== "Antarctica" && !have.has(f.properties.name))
-      .forEach(f => regions.push(mk(f, "c:" + f.properties.name, f.properties.name, f.properties.name)));
+      .forEach(f => parents.push(mk(f, "c:" + f.properties.name, f.properties.name, f.properties.name)));
     states.forEach(f => { const p = f.properties;
-      regions.push(mk(f, "s:" + (p.adm1_code || p.name + p.admin), p.name + ", " + p.admin, p.admin)); });
-    regions = regions.filter(Boolean);
+      parents.push(mk(f, "s:" + (p.adm1_code || p.name + p.admin), p.name + ", " + p.admin, p.admin)); });
+    parents = parents.filter(Boolean);
+    regions = parents.flatMap(p => p.cells);
+    parents.forEach(p => { const f = data.claims[p.key];   // upgrade older whole-region claims to cells
+      if (f) { p.cells.forEach(c => data.claims[c.key] = f); delete data.claims[p.key]; } });
     $("msg").style.display = "none";
   } catch (e) {
     console.error(e);
     $("msg").innerHTML = "Couldn't load the map.<br><small>" + esc(e.message || e) + "</small><br><small>If you're viewing this inside a chat preview, open the file in your own browser or site instead; previews block outside downloads.</small>";
     return;
   }
-  if (EDIT) buildTools();
+  if (EDIT) { buildTools(); snapshot(); updateUndoBtns(); }
+  try { await document.fonts.load('700 20px "Source Sans 3"'); } catch (e) {}
   computeLabels(); renderLegend(); renderInfo(); resize();
 }
 
 /* ---------- labels ---------- */
+function tint(hex, v) { const c = hex ? d3.interpolateRgb(LAND, hex)(.78) : LAND; return d3.color(c).brighter(v * .5).formatHex(); }
+function recolor() {   // precompute each cell's fill: faction colour blended into dark terrain, with slight per-cell variation
+  const cache = {};
+  for (const r of regions) { const id = data.claims[r.key], f = data.factions[id]; r.id = f ? id : null;
+    const k = (f ? f.color : "") + "|" + r.v; r.fill = cache[k] ||= tint(f && f.color, r.v); }
+}
+function biggest(L) {   // largest connected chunk of a faction's cells (ignores far-off islands/exclaves)
+  const S = G * 2.2, idx = new Map(), K = (x, y) => x + "," + y, par = L.map((_, i) => i);
+  const find = i => par[i] === i ? i : (par[i] = find(par[i]));
+  L.forEach((r, i) => { const k = K(Math.floor(r.c[0]/S), Math.floor(r.c[1]/S)); if (!idx.has(k)) idx.set(k, []); idx.get(k).push(i); });
+  L.forEach((r, i) => { const gx = Math.floor(r.c[0]/S), gy = Math.floor(r.c[1]/S);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (const j of idx.get(K(gx+dx, gy+dy)) || [])
+      if (j > i && Math.hypot(L[j].c[0]-r.c[0], L[j].c[1]-r.c[1]) < S) par[find(j)] = find(i); });
+  const g = {}; L.forEach((r, i) => (g[find(i)] ||= []).push(r));
+  return Object.values(g).sort((a, b) => b.length - a.length)[0];
+}
 function computeLabels() {
-  labels = []; const g = {};
-  regions.forEach(r => { const f = data.claims[r.key]; if (f && data.factions[f]) (g[f] ||= []).push(r); });
+  recolor(); labels = []; const g = {};
+  regions.forEach(r => { if (r.id) (g[r.id] ||= []).push(r); });
+  ctx.setTransform(1,0,0,1,0,0);
   for (const f in g) {
-    const L = g[f]; let A = 0, cx = 0, cy = 0;
-    L.forEach(r => { A += r.a; cx += r.c[0]*r.a; cy += r.c[1]*r.a; }); cx /= A; cy /= A;
-    let best = L[0], bd = Infinity;
-    L.forEach(r => { const d = (r.c[0]-cx)**2 + (r.c[1]-cy)**2; if (d < bd) { bd = d; best = r; } });
-    let p = best.c; const m = data.labels[f]; if (m) { const q = proj(m); if (q) p = q; }
-    const n = data.factions[f].name.toUpperCase();
-    labels.push({ n, x: p[0], y: p[1], s: Math.min(36, Math.max(2, Math.sqrt(A)*1.5/n.length)) });
+    const cl = biggest(g[f]), n = data.factions[f].name.toUpperCase(), m = cl.length;
+    let mx = 0, my = 0; cl.forEach(r => { mx += r.c[0]; my += r.c[1]; }); mx /= m; my /= m;
+    let sxx = 0, sxy = 0, syy = 0;
+    cl.forEach(r => { const dx = r.c[0]-mx, dy = r.c[1]-my; sxx += dx*dx; sxy += dx*dy; syy += dy*dy; });
+    const tr = sxx + syy, dt = sxx*syy - sxy*sxy, ds = Math.sqrt(Math.max(0, tr*tr/4 - dt)), l1 = tr/2 + ds, l2 = tr/2 - ds;
+    let a = .5 * Math.atan2(2*sxy, sxx - syy);          // text runs along the territory's long axis
+    if (m < 4 || l1 < 1.8*l2 || Math.abs(a) < .2) a = 0;
+    const ux = Math.cos(a), uy = Math.sin(a);
+    let t0 = 1e9, t1 = -1e9, s0 = 1e9, s1 = -1e9;
+    cl.forEach(r => { const dx = r.c[0]-mx, dy = r.c[1]-my, tt = dx*ux + dy*uy, ss = -dx*uy + dy*ux;
+      t0 = Math.min(t0, tt); t1 = Math.max(t1, tt); s0 = Math.min(s0, ss); s1 = Math.max(s1, ss); });
+    const L = t1 - t0 + G*1.3, W = s1 - s0 + G*1.3, tc = (t0+t1)/2, sc = (s0+s1)/2;
+    let x = mx + ux*tc - uy*sc, y = my + uy*tc + ux*sc;
+    const q = data.labels[f] && proj(data.labels[f]); if (q) [x, y] = q;
+    ctx.font = '700 100px "Source Sans 3", sans-serif'; ctx.letterSpacing = "18px";
+    const w100 = ctx.measureText(n).width; ctx.letterSpacing = "0px";
+    labels.push({ n, x, y, a, w100, s: Math.min(46, .9*L/w100*100, W*.9), imp: m + (q ? 1e6 : 0) });
   }
+  // stop overlaps: biggest factions first; a clashing label shrinks, and is dropped if it still clashes
+  const circ = l => { const h = l.s*.7, k = Math.max(1, Math.ceil(l.w/(h*.9))), o = [];
+    for (let i = 0; i < k; i++) { const d = k === 1 ? 0 : (i/(k-1) - .5)*(l.w - h); o.push([l.x + Math.cos(l.a)*d, l.y + Math.sin(l.a)*d, h/2]); }
+    return o; };
+  const hit = (A, B) => A.some(a => B.some(b => Math.hypot(a[0]-b[0], a[1]-b[1]) < a[2] + b[2]));
+  const placed = [];
+  labels.sort((a, b) => b.imp - a.imp).forEach(l => {
+    const s0 = l.s;
+    for (const k of [1, .85, .7, .55]) { l.s = s0*k; l.w = l.w100*l.s/100; l.cc = circ(l);
+      if (!placed.some(p => hit(l.cc, p.cc))) { placed.push(l); break; } }
+  });
+  labels = placed;
 }
 
 /* ---------- drawing ---------- */
@@ -180,25 +270,53 @@ function paint() {
   ctx.setTransform(dpr*t.k,0,0,dpr*t.k,dpr*t.x,dpr*t.y);
   const [vx0,vy0] = t.invert([0,0]), [vx1,vy1] = t.invert([cw,ch]), shade = {};
   const vis = r => !(r.b[1][0]<vx0 || r.b[0][0]>vx1 || r.b[1][1]<vy0 || r.b[0][1]>vy1);
-  ctx.lineWidth = .6 / t.k; ctx.lineJoin = "round";
-  for (const r of regions) {
-    if (!vis(r)) continue;
-    const id = data.claims[r.key], f = data.factions[id];
-    ctx.fillStyle = f ? f.color : LAND;
-    ctx.strokeStyle = f ? (shade[id] ||= d3.color(f.color).darker(1).formatHex()) : LAND_LINE;
-    ctx.fill(r.p); ctx.stroke(r.p);
+  ctx.lineJoin = "round";
+  const light = {}, lines = G * t.k >= 4;
+  for (const P of parents) {
+    if (!vis(P)) continue;
+    const one = P.cells.length === 1;
+    ctx.save(); if (!one) ctx.clip(P.p);
+    ctx.lineWidth = .5 / t.k;
+    for (const r of P.cells) {
+      ctx.fillStyle = r.id && r.id === cur ? (light[r.fill] ||= d3.color(r.fill).brighter(.55).formatHex()) : r.fill;
+      ctx.strokeStyle = "rgba(0,0,0,.3)";
+      const tg = one ? P.p : r.p;
+      ctx.fill(tg); if (lines && !one) ctx.stroke(tg);
+    }
+    ctx.restore();
+    ctx.lineWidth = 1.1 / t.k; ctx.strokeStyle = "rgba(4,6,10,.8)"; ctx.stroke(P.p);
   }
-  if (cur && data.factions[cur]) {           // outline the selected faction
-    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.6 / t.k;
-    for (const r of regions) if (data.claims[r.key] === cur && vis(r)) ctx.stroke(r.p);
-  }
-  if (hover) { ctx.fillStyle = "rgba(255,255,255,.28)"; ctx.fill(hover.p); }
+  if (hover) { ctx.save(); ctx.clip(hover.parent.p); ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.fill(hover.p); ctx.restore(); }
   ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
   for (const l of labels) {
     if (l.s * t.k < 7 || l.x < vx0-200 || l.x > vx1+200 || l.y < vy0-100 || l.y > vy1+100) continue;
-    ctx.font = `700 ${l.s}px Cinzel, Georgia, serif`;
-    ctx.lineWidth = l.s * .16; ctx.strokeStyle = "rgba(0,0,0,.65)"; ctx.strokeText(l.n, l.x, l.y);
-    ctx.fillStyle = "#f4ecd2"; ctx.fillText(l.n, l.x, l.y);
+    ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.a);
+    ctx.font = `700 ${l.s}px "Source Sans 3", sans-serif`; ctx.letterSpacing = (l.s * .18) + "px";
+    ctx.lineWidth = l.s * .14; ctx.strokeStyle = "rgba(0,0,0,.75)"; ctx.strokeText(l.n, 0, 0);
+    ctx.fillStyle = "#f3f1ff"; ctx.fillText(l.n, 0, 0); ctx.restore();
+  }
+  drawRedactions();
+}
+function drawRedactions() {
+  if (!data.redactions.length) return;
+  ctx.setTransform(1,0,0,1,0,0);   // work in raw device-pixel space for the pixelation read/write
+  for (const rd of data.redactions) {
+    const g = redactGeom(rd);
+    const sx0 = t.x + g.mx*t.k, sy0 = t.y + g.my*t.k, rScreen = g.r*t.k;   // CSS-pixel screen position
+    const cxD = sx0*dpr, cyD = sy0*dpr, rD = rScreen*dpr;
+    if (cxD+rD<0 || cyD+rD<0 || cxD-rD>cv.width || cyD-rD>cv.height || rD<2) continue;
+    const x0 = Math.max(0, cxD-rD), y0 = Math.max(0, cyD-rD);
+    const x1 = Math.min(cv.width, cxD+rD), y1 = Math.min(cv.height, cyD+rD);
+    const w = x1-x0, h = y1-y0; if (w<=0 || h<=0) continue;
+    const blocks = Math.max(4, Math.min(28, Math.round((rD*2)/16)));
+    const off = document.createElement("canvas"); off.width = blocks; off.height = blocks;
+    const octx = off.getContext("2d"); octx.imageSmoothingEnabled = true;
+    octx.drawImage(cv, x0, y0, w, h, 0, 0, blocks, blocks);
+    ctx.save();
+    ctx.beginPath(); ctx.ellipse(cxD, cyD, rD, rD, 0, 0, Math.PI*2); ctx.clip();
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, 0, 0, blocks, blocks, x0, y0, w, h);
+    ctx.restore();
   }
 }
 function resize() {
@@ -213,10 +331,11 @@ let rz; new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimati
 /* ---------- interaction ---------- */
 function pick(mx, my) {
   const [x, y] = t.invert([mx, my]); ctx.setTransform(1,0,0,1,0,0);
+  if (!EDIT && inRedaction(x, y)) return null;
   for (let i = regions.length-1; i >= 0; i--) {
     const r = regions[i], b = r.b;
     if (x<b[0][0] || x>b[1][0] || y<b[0][1] || y>b[1][1]) continue;
-    if (ctx.isPointInPath(r.p, x, y)) return r;
+    if (ctx.isPointInPath(r.p, x, y) && ctx.isPointInPath(r.parent.p, x, y)) return r;
   }
   return null;
 }
@@ -233,11 +352,24 @@ cv.onpointermove = e => {
 cv.onpointerleave = () => { hover = null; $("tip").style.display = "none"; draw(); };
 cv.onclick = e => {
   if (!data || Math.hypot(e.clientX-sx, e.clientY-sy) > 4) return;
+  if (EDIT && redacting) {
+    const [x, y] = t.invert([e.offsetX, e.offsetY]), [lon, lat] = proj.invert([x, y]);
+    const km = Math.max(1, parseFloat($("redactRadius").value) || 300);
+    data.redactions.push({ id: "r" + Date.now().toString(36), lon, lat, km });
+    redacting = false; $("redactBtn").classList.remove("on");
+    return changed();
+  }
   const r = pick(e.offsetX, e.offsetY); if (!r) return;
   if (EDIT) {
     if (placing) { const [x,y] = t.invert([e.offsetX, e.offsetY]); data.labels[cur] = proj.invert([x,y]); placing = false; $("place").classList.remove("on"); return changed(); }
-    (wholeCountry ? regions.filter(x => x.country === r.country) : [r])
-      .forEach(x => { if (cur && data.factions[cur]) data.claims[x.key] = cur; else delete data.claims[x.key]; });
+    if (scope === "cell") {
+      const rad = Math.max(1, parseInt($("brush")?.value) || 1);
+      (rad <= 1 ? [r] : regions.filter(x => Math.hypot(x.c[0]-r.c[0], x.c[1]-r.c[1]) <= rad * G))
+        .forEach(x => { if (cur && data.factions[cur]) data.claims[x.key] = cur; else delete data.claims[x.key]; });
+    } else {
+      (scope === "country" ? regions.filter(x => x.country === r.country) : r.parent.cells)
+        .forEach(x => { if (cur && data.factions[cur]) data.claims[x.key] = cur; else delete data.claims[x.key]; });
+    }
     return changed();
   }
   picked = r; cur = data.claims[r.key] || null; renderInfo(); renderLegend(); draw();
@@ -265,11 +397,18 @@ function renderInfo() {
 }
 function renderLegend() {
   const n = {}; Object.values(data.claims).forEach(v => n[v] = (n[v]||0) + 1);
-  const ids = Object.keys(data.factions).filter(i => EDIT || n[i]).sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
-  $("legend").innerHTML = (EDIT ? `<div class="row${cur?"":" on"}" data-id=""><i style="background:${LAND}"></i>Unclaimed / eraser</div>` : "") +
+  const ids = Object.keys(data.factions).filter(i => (EDIT || n[i]) && data.factions[i].name.toLowerCase().includes(legendFilter))
+    .sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
+  const total = regions.length, claimed = Object.keys(data.claims).length;
+  $("legend").innerHTML =
+    `<div style="padding:.5rem 1.1rem 0"><input id="legendSearch" placeholder="Filter factions…" value="${esc(legendFilter)}"></div>` +
+    `<p class="hint" style="padding:0 1.1rem">${claimed} / ${total} cells claimed (${(100*claimed/total).toFixed(1)}%)</p>` +
+    (EDIT ? `<div class="row${cur?"":" on"}" data-id=""><i style="background:${LAND}"></i>Unclaimed / eraser</div>` : "") +
     ids.map(i => `<div class="row${i===cur?" on":""}" data-id="${i}"><i style="background:${esc(data.factions[i].color)}"></i>${esc(data.factions[i].name)}<b>${n[i]||0}</b></div>`).join("");
   $("legend").querySelectorAll(".row").forEach(r => r.onclick = () => {
     cur = r.dataset.id || null; picked = null; renderInfo(); renderLegend(); draw(); if (cur && !EDIT) zoomTo(cur); });
+  const s = $("legendSearch"); if (s) { s.oninput = () => { legendFilter = s.value.toLowerCase(); renderLegend();
+    const s2 = $("legendSearch"); s2.focus(); s2.setSelectionRange(s2.value.length, s2.value.length); }; }
 }
 function zoomTo(id) {
   const L = regions.filter(r => data.claims[r.key] === id); if (!L.length) return;
@@ -283,29 +422,88 @@ function zoomTo(id) {
 function changed(full = true) {
   computeLabels(); draw(); renderLegend();
   try { localStorage.setItem("claimsDraft", JSON.stringify(data)); } catch (e) {}
+  if (EDIT) { renderRedactList(); renderMergeOptions(); if (full) snapshot(); updateUndoBtns(); }
+}
+function snapshot() {
+  history = history.slice(0, hIndex + 1);
+  history.push(JSON.stringify(data));
+  hIndex = history.length - 1;
+  if (history.length > 40) { history.shift(); hIndex--; }
+}
+function restoreHistory() {
+  cur = null; picked = null; computeLabels(); renderInfo(); renderLegend(); renderRedactList(); renderMergeOptions(); draw(); updateUndoBtns();
+  try { localStorage.setItem("claimsDraft", JSON.stringify(data)); } catch (e) {}
+}
+function undo() { if (hIndex <= 0) return; hIndex--; data = norm(JSON.parse(history[hIndex])); restoreHistory(); }
+function redo() { if (hIndex >= history.length - 1) return; hIndex++; data = norm(JSON.parse(history[hIndex])); restoreHistory(); }
+function updateUndoBtns() { const u = $("undo"), r = $("redo"); if (!u) return;
+  u.disabled = hIndex <= 0; r.disabled = hIndex >= history.length - 1; }
+function renderRedactList() {
+  const el = $("redactList"); if (!el) return;
+  el.innerHTML = data.redactions.map(rd => `<div class="row" style="cursor:default;padding:.25rem 0">
+    <i style="background:#444"></i>Redaction <b>${rd.km}km</b>
+    <button data-id="${rd.id}" class="rmRedact" style="margin-left:.4rem;padding:.1rem .4rem">✕</button></div>`).join("")
+    || '<p class="hint">No redacted areas.</p>';
+  el.querySelectorAll(".rmRedact").forEach(b => b.onclick = () => { data.redactions = data.redactions.filter(r => r.id !== b.dataset.id); changed(); });
+}
+function renderMergeOptions() {
+  const el = $("mergeSel"); if (!el) return;
+  const ids = Object.keys(data.factions).filter(i => i !== cur).sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
+  el.innerHTML = ids.map(i => `<option value="${i}">${esc(data.factions[i].name)}</option>`).join("");
 }
 function buildTools() {
   const el = $("tools"); el.hidden = false;
-  el.innerHTML = `<label><input type="checkbox" id="whole"> Paint whole country at once</label>
-    <button id="add">New faction</button><button id="del">Delete faction</button>
+  el.innerHTML = `
+    <label>Paint: <select id="scope"><option value="cell">One cell</option><option value="state">Whole state / province</option><option value="country">Whole country</option></select></label>
+    <label style="flex-basis:auto">Brush radius (cells): <input id="brush" type="number" min="1" max="25" value="1" style="width:4em"></label>
+    <button id="add">New faction</button><button id="dup">Duplicate</button><button id="del">Delete faction</button>
+    <button id="rec">Randomise all colours</button>
     <button id="place">Place label</button><button id="unlab">Reset label</button>
-    <button id="exp">Export claims.json</button><button id="imp">Import</button><button id="fresh">Reload from file</button>`;
-  $("whole").onchange = e => wholeCountry = e.target.checked;
+    <button id="undo">↶ Undo</button><button id="redo">↷ Redo</button>
+    <button id="exp">Export claims.json</button><button id="imp">Import</button><button id="fresh">Reload from file</button>
+    <div style="flex-basis:100%;border-top:1px solid var(--line);margin-top:.5rem;padding-top:.5rem">
+      <label>Merge current faction into: <select id="mergeSel"></select></label>
+      <button id="merge">Merge</button>
+    </div>
+    <div style="flex-basis:100%;border-top:1px solid var(--line);margin-top:.5rem;padding-top:.5rem">
+      <label>Redaction radius (km): <input id="redactRadius" type="number" min="1" value="300" style="width:5em"></label>
+      <button id="redactBtn">▦ Redact area (click map)</button><button id="clearRedact">Clear all</button>
+      <div id="redactList" style="flex-basis:100%;margin-top:.3rem"></div>
+    </div>`;
+  $("scope").onchange = e => scope = e.target.value;
   $("add").onclick = () => { const id = "f" + Date.now().toString(36);
     data.factions[id] = { name: "New faction", color: d3.hsl(Math.random()*360, .5, .5).formatHex(), ruler: "", capital: "", gov: "", bloc: "", desc: "" };
+    cur = id; renderInfo(); changed(); };
+  $("dup").onclick = () => { if (!cur || !data.factions[cur]) return; const id = "f" + Date.now().toString(36);
+    data.factions[id] = { ...data.factions[cur], name: data.factions[cur].name + " (copy)" };
     cur = id; renderInfo(); changed(); };
   $("del").onclick = () => { if (!cur || !confirm("Delete this faction and unclaim its land?")) return;
     for (const k in data.claims) if (data.claims[k] === cur) delete data.claims[k];
     delete data.factions[cur]; delete data.labels[cur]; cur = null; renderInfo(); changed(); };
-  $("place").onclick = e => { if (!cur) return; placing = !placing; e.target.classList.toggle("on", placing); };
+  $("rec").onclick = () => { if (!confirm("Randomise every faction's colour?")) return;
+    for (const id in data.factions) data.factions[id].color = d3.hsl(Math.random()*360, .55, .5).formatHex();
+    renderInfo(); changed(); };
+  $("place").onclick = e => { if (!cur) return; redacting = false; $("redactBtn").classList.remove("on"); placing = !placing; e.target.classList.toggle("on", placing); };
   $("unlab").onclick = () => { if (cur) { delete data.labels[cur]; changed(); } };
+  $("undo").onclick = undo; $("redo").onclick = redo;
+  $("merge").onclick = () => { const tgt = $("mergeSel").value; if (!cur || !tgt || !data.factions[tgt]) return;
+    if (!confirm("Merge current faction into " + data.factions[tgt].name + "? This deletes the current faction.")) return;
+    for (const k in data.claims) if (data.claims[k] === cur) data.claims[k] = tgt;
+    delete data.factions[cur]; delete data.labels[cur]; cur = tgt; renderInfo(); changed(); };
+  $("redactBtn").onclick = e => { placing = false; $("place").classList.remove("on"); redacting = !redacting; e.target.classList.toggle("on", redacting); };
+  $("clearRedact").onclick = () => { if (!data.redactions.length || !confirm("Remove all redacted areas?")) return; data.redactions = []; changed(); };
   $("exp").onclick = () => { const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type: "application/json"}));
     a.download = "claims.json"; a.click(); };
   $("imp").onclick = () => $("file").click();
   $("file").onchange = async e => { try { data = norm(JSON.parse(await e.target.files[0].text())); cur = null; renderInfo(); changed(); } catch (x) { alert("That file isn't valid claims JSON."); } };
   $("fresh").onclick = async () => { if (!confirm("Discard your draft and reload claims.json?")) return;
-    try { localStorage.removeItem("claimsDraft"); } catch (e) {} data = await loadClaims(); cur = null; renderInfo(); changed(); };
+    try { localStorage.removeItem("claimsDraft"); } catch (e) {} data = await loadClaims(); cur = null; renderInfo(); changed(); history = []; hIndex = -1; snapshot(); updateUndoBtns(); };
+  renderRedactList(); renderMergeOptions(); updateUndoBtns();
+  document.onkeydown = e => { if (!EDIT) return; const z = e.key.toLowerCase() === "z";
+    if ((e.ctrlKey||e.metaKey) && z && !e.shiftKey) { e.preventDefault(); undo(); }
+    else if ((e.ctrlKey||e.metaKey) && ((z && e.shiftKey) || e.key.toLowerCase()==="y")) { e.preventDefault(); redo(); }
+    else if (e.key === "Escape") { placing = false; redacting = false; $("place")?.classList.remove("on"); $("redactBtn")?.classList.remove("on"); } };
 }
 
 init();
