@@ -26,6 +26,15 @@
    "gov": "People's Republic",
    "bloc": "",
    "desc": "Moscow initially emerged as a liberal republic after the collapse of the old Russian government. By 1968, however, the liberals had been overthrown and a communist government had taken power."
+  },
+  "fmug2yk59": {
+   "name": "Інформація недоступна",
+   "color": "#c6beae",
+   "ruler": "Інформація недоступна",
+   "capital": "Інформація недоступна",
+   "gov": "Інформація недоступна",
+   "bloc": "Інформація недоступна",
+   "desc": "Інформація недоступна\n"
   }
  },
  "claims": {
@@ -2793,42 +2802,41 @@
   "c:Greenland|111,7": "fmufzs1hp",
   "c:Greenland|111,8": "fmufzs1hp",
   "c:Greenland|112,6": "fmufzs1hp",
-  "c:Ukraine|141,27": "demo",
-  "c:Ukraine|141,28": "demo",
-  "c:Ukraine|142,26": "demo",
-  "c:Ukraine|142,27": "demo",
-  "c:Ukraine|142,28": "demo",
-  "c:Ukraine|143,26": "demo",
-  "c:Ukraine|143,27": "demo",
-  "c:Ukraine|143,28": "demo",
-  "c:Ukraine|144,26": "demo",
-  "c:Ukraine|144,27": "demo",
-  "c:Ukraine|144,28": "demo",
-  "c:Ukraine|145,27": "demo",
-  "c:Ukraine|145,28": "demo",
-  "c:Ukraine|145,29": "demo",
-  "c:Ukraine|145,30": "demo",
-  "c:Ukraine|146,27": "demo",
-  "c:Ukraine|146,28": "demo",
-  "c:Ukraine|146,29": "demo",
-  "c:Ukraine|146,30": "demo",
-  "c:Ukraine|147,26": "demo",
-  "c:Ukraine|147,27": "demo",
-  "c:Ukraine|147,28": "demo",
-  "c:Ukraine|147,29": "demo",
-  "c:Ukraine|148,26": "demo",
-  "c:Ukraine|148,27": "demo",
-  "c:Ukraine|148,28": "demo",
-  "c:Ukraine|148,29": "demo",
-  "c:Ukraine|149,27": "demo",
-  "c:Ukraine|149,28": "demo",
-  "c:Ukraine|149,29": "demo",
-  "c:Ukraine|150,27": "demo",
-  "c:Ukraine|150,28": "demo",
-  "c:Ukraine|150,29": "demo",
-  "c:Ukraine|151,28": "demo",
-  "c:Ukraine|151,29": "demo",
-  "c:Ukraine|152,28": "demo",
+  "c:Ukraine|141,27": "fmug2yk59",
+  "c:Ukraine|142,26": "fmug2yk59",
+  "c:Ukraine|142,27": "fmug2yk59",
+  "c:Ukraine|142,28": "fmug2yk59",
+  "c:Ukraine|143,26": "fmug2yk59",
+  "c:Ukraine|143,27": "fmug2yk59",
+  "c:Ukraine|143,28": "fmug2yk59",
+  "c:Ukraine|144,26": "fmug2yk59",
+  "c:Ukraine|144,27": "fmug2yk59",
+  "c:Ukraine|144,28": "fmug2yk59",
+  "c:Ukraine|145,27": "fmug2yk59",
+  "c:Ukraine|145,28": "fmug2yk59",
+  "c:Ukraine|145,29": "fmug2yk59",
+  "c:Ukraine|145,30": "fmug2yk59",
+  "c:Ukraine|146,27": "fmug2yk59",
+  "c:Ukraine|146,28": "fmug2yk59",
+  "c:Ukraine|146,29": "fmug2yk59",
+  "c:Ukraine|146,30": "fmug2yk59",
+  "c:Ukraine|147,26": "fmug2yk59",
+  "c:Ukraine|147,27": "fmug2yk59",
+  "c:Ukraine|147,28": "fmug2yk59",
+  "c:Ukraine|147,29": "fmug2yk59",
+  "c:Ukraine|148,26": "fmug2yk59",
+  "c:Ukraine|148,27": "fmug2yk59",
+  "c:Ukraine|148,28": "fmug2yk59",
+  "c:Ukraine|148,29": "fmug2yk59",
+  "c:Ukraine|149,27": "fmug2yk59",
+  "c:Ukraine|149,28": "fmug2yk59",
+  "c:Ukraine|149,29": "fmug2yk59",
+  "c:Ukraine|150,27": "fmug2yk59",
+  "c:Ukraine|150,28": "fmug2yk59",
+  "c:Ukraine|150,29": "fmug2yk59",
+  "c:Ukraine|151,28": "fmug2yk59",
+  "c:Ukraine|151,29": "fmug2yk59",
+  "c:Ukraine|152,28": "fmug2yk59",
   "s:RUS-2167|177,22": "fmufzs1hp",
   "s:RUS-2167|178,21": "fmufzs1hp",
   "s:RUS-2167|178,22": "fmufzs1hp",
@@ -4713,9 +4721,65 @@
   "c:Dem. Rep. Congo|145,67": "fmufzs1hp",
   "c:Dem. Rep. Congo|145,71": "fmufzs1hp",
   "s:USA-3549|71,37": "fmug2e6ed",
-  "s:RUS-2361|150,24": "fmug2ph3r"
+  "s:RUS-2361|150,24": "fmug2ph3r",
+  "c:Ukraine|141,28": "fmug2yk59"
  },
  "labels": {},
  "nukes": [],
- "redactions": []
+ "redactions": [
+  {
+   "id": "rmug3i1lj",
+   "lon": 31.40817293853809,
+   "lat": 48.77145167337059,
+   "km": 300
+  },
+  {
+   "id": "rmug3i2p0",
+   "lon": 35.297555103089344,
+   "lat": 48.44197375701201,
+   "km": 300
+  },
+  {
+   "id": "rmug3i4bn",
+   "lon": 37.65881350365921,
+   "lat": 48.698234358624234,
+   "km": 300
+  },
+  {
+   "id": "rmug3i5cj",
+   "lon": 32.204123555055936,
+   "lat": 50.14427632486469,
+   "km": 300
+  },
+  {
+   "id": "rmug3i7e6",
+   "lon": 26.017260458989178,
+   "lat": 49.90632005193905,
+   "km": 300
+  },
+  {
+   "id": "rmug3i8kl",
+   "lon": 28.54325781773836,
+   "lat": 49.357190191341395,
+   "km": 300
+  },
+  {
+   "id": "rmug3igh8",
+   "lon": 24.955606099034508,
+   "lat": 49.31779280652031,
+   "km": 300
+  },
+  {
+   "id": "rmug3is72",
+   "lon": 29.258660557639157,
+   "lat": 45.99235820295259,
+   "km": 155
+  },
+  {
+   "id": "rmug3j036",
+   "lon": 35.32257838856343,
+   "lat": 50.096228369741276,
+   "km": 155
+  }
+ ]
 }
