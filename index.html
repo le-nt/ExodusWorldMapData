@@ -214,6 +214,11 @@ function recolor() {   // precompute each cell's fill: faction colour blended in
   const cache = {};
   for (const r of regions) { const id = data.claims[r.key], f = data.factions[id]; r.id = f ? id : null;
     const k = (f ? f.color : "") + "|" + r.v; r.fill = cache[k] ||= tint(f && f.color, r.v); }
+  for (const P of parents) {   // one aggregated fill per parent (its most common owner), used when zoomed out
+    const counts = {}; let best = "", bestN = -1;
+    for (const r of P.cells) { const k = r.id || ""; const n = (counts[k] = (counts[k]||0) + 1); if (n > bestN) { bestN = n; best = k; } }
+    P.domFill = tint(best && data.factions[best] && data.factions[best].color, 0);
+  }
 }
 function biggest(L) {   // largest connected chunk of a faction's cells (ignores far-off islands/exclaves)
   const S = G * 2.2, idx = new Map(), K = (x, y) => x + "," + y, par = L.map((_, i) => i);
@@ -271,19 +276,26 @@ function paint() {
   const [vx0,vy0] = t.invert([0,0]), [vx1,vy1] = t.invert([cw,ch]), shade = {};
   const vis = r => !(r.b[1][0]<vx0 || r.b[0][0]>vx1 || r.b[1][1]<vy0 || r.b[0][1]>vy1);
   ctx.lineJoin = "round";
-  const light = {}, lines = G * t.k >= 4;
+  const rel = t.k / k0;   // how far zoomed in the user is relative to the fully-zoomed-out view (scaleExtent is [k0, k0*40])
+  const light = {}, lines = rel >= 6;
+  const showCells = rel >= 3;   // subdivisions are pointless clutter near the zoomed-out end; skip them for speed
   for (const P of parents) {
     if (!vis(P)) continue;
     const one = P.cells.length === 1;
-    ctx.save(); if (!one) ctx.clip(P.p);
-    ctx.lineWidth = .5 / t.k;
-    for (const r of P.cells) {
-      ctx.fillStyle = r.id && r.id === cur ? (light[r.fill] ||= d3.color(r.fill).brighter(.55).formatHex()) : r.fill;
-      ctx.strokeStyle = "rgba(0,0,0,.3)";
-      const tg = one ? P.p : r.p;
-      ctx.fill(tg); if (lines && !one) ctx.stroke(tg);
+    if (!showCells && !one) {
+      ctx.fillStyle = P.domFill;
+      ctx.fill(P.p);
+    } else {
+      ctx.save(); if (!one) ctx.clip(P.p);
+      ctx.lineWidth = .5 / t.k;
+      for (const r of P.cells) {
+        ctx.fillStyle = r.id && r.id === cur ? (light[r.fill] ||= d3.color(r.fill).brighter(.55).formatHex()) : r.fill;
+        ctx.strokeStyle = "rgba(0,0,0,.3)";
+        const tg = one ? P.p : r.p;
+        ctx.fill(tg); if (lines && !one) ctx.stroke(tg);
+      }
+      ctx.restore();
     }
-    ctx.restore();
     ctx.lineWidth = 1.1 / t.k; ctx.strokeStyle = "rgba(4,6,10,.8)"; ctx.stroke(P.p);
   }
   if (hover) { ctx.save(); ctx.clip(hover.parent.p); ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.fill(hover.p); ctx.restore(); }
@@ -376,7 +388,7 @@ cv.onclick = e => {
 };
 
 /* ---------- panel ---------- */
-const count = id => Object.values(data.claims).filter(v => v === id).length;
+const count = id => regions.reduce((n, r) => data.claims[r.key] === id ? n + 1 : n, 0);
 function renderInfo() {
   const el = $("info"), f = cur && data.factions[cur];
   if (EDIT) {
@@ -396,10 +408,11 @@ function renderInfo() {
     (f.desc ? `<p class="desc">${esc(f.desc)}</p>` : "");
 }
 function renderLegend() {
-  const n = {}; Object.values(data.claims).forEach(v => n[v] = (n[v]||0) + 1);
+  const n = {}; let claimed = 0;
+  regions.forEach(r => { const v = data.claims[r.key]; if (v && data.factions[v]) { n[v] = (n[v]||0) + 1; claimed++; } });
   const ids = Object.keys(data.factions).filter(i => (EDIT || n[i]) && data.factions[i].name.toLowerCase().includes(legendFilter))
     .sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
-  const total = regions.length, claimed = Object.keys(data.claims).length;
+  const total = regions.length;
   $("legend").innerHTML =
     `<div style="padding:.5rem 1.1rem 0"><input id="legendSearch" placeholder="Filter factions…" value="${esc(legendFilter)}"></div>` +
     `<p class="hint" style="padding:0 1.1rem">${claimed} / ${total} cells claimed (${(100*claimed/total).toFixed(1)}%)</p>` +
