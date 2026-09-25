@@ -25,16 +25,16 @@
    "capital": "Moscow",
    "gov": "People's Republic",
    "bloc": "",
-   "desc": "Moscow initially emerged as a liberal republic after the collapse of the old Russian government. By 1968, however, the liberals had been overthrown and a communist government had taken power."
+   "desc": "Moscow initially emerged as a liberal republic after the collapse of the old Russian government. By 1975, however, the liberals had been overthrown and a communist government had taken power."
   },
   "fmug2yk59": {
-   "name": "Інформація недоступна",
-   "color": "#c6beae",
+   "name": "Українська спеціальна комісія",
+   "color": "#2c5181",
    "ruler": "Інформація недоступна",
-   "capital": "Інформація недоступна",
-   "gov": "Інформація недоступна",
-   "bloc": "Інформація недоступна",
-   "desc": "Інформація недоступна\n"
+   "capital": "Місцезнаходження не розголошується",
+   "gov": "Технократична олігархічна система управління",
+   "bloc": "",
+   "desc": "Інформацію не надано"
   }
  },
  "claims": {
@@ -2803,6 +2803,7 @@
   "c:Greenland|111,8": "fmufzs1hp",
   "c:Greenland|112,6": "fmufzs1hp",
   "c:Ukraine|141,27": "fmug2yk59",
+  "c:Ukraine|141,28": "fmug2yk59",
   "c:Ukraine|142,26": "fmug2yk59",
   "c:Ukraine|142,27": "fmug2yk59",
   "c:Ukraine|142,28": "fmug2yk59",
@@ -3061,8 +3062,6 @@
   "s:RUS-2363|151,25": "fmufzs1hp",
   "s:RUS-2363|152,25": "fmufzs1hp",
   "s:RUS-2363|152,26": "fmufzs1hp",
-  "s:RUS-2364|150,23": "fmug2ph3r",
-  "s:RUS-2364|151,23": "fmug2ph3r",
   "s:RUS-2365|0": "fmug2ph3r",
   "s:RUS-2366|150,25": "fmufzs1hp",
   "s:RUS-2367|152,29": "fmufzs1hp",
@@ -4721,65 +4720,119 @@
   "c:Dem. Rep. Congo|145,67": "fmufzs1hp",
   "c:Dem. Rep. Congo|145,71": "fmufzs1hp",
   "s:USA-3549|71,37": "fmug2e6ed",
-  "s:RUS-2361|150,24": "fmug2ph3r",
-  "c:Ukraine|141,28": "fmug2yk59"
+  "s:RUS-2364|150,23": "fmug2ph3r",
+  "s:RUS-2364|151,23": "fmug2ph3r"
  },
  "labels": {},
  "nukes": [],
  "redactions": [
   {
-   "id": "rmug3i1lj",
-   "lon": 31.40817293853809,
-   "lat": 48.77145167337059,
-   "km": 300
+   "id": "rmug3cm5k",
+   "lon": 31.61887650301361,
+   "lat": 48.48547269044018,
+   "km": 250
   },
   {
-   "id": "rmug3i2p0",
-   "lon": 35.297555103089344,
-   "lat": 48.44197375701201,
-   "km": 300
+   "id": "rmug3cok0",
+   "lon": 31.82771451030642,
+   "lat": 50.403817672355494,
+   "km": 250
   },
   {
-   "id": "rmug3i4bn",
-   "lon": 37.65881350365921,
-   "lat": 48.698234358624234,
-   "km": 300
+   "id": "rmug3cq89",
+   "lon": 33.330753926692616,
+   "lat": 49.509875749278436,
+   "km": 250
   },
   {
-   "id": "rmug3i5cj",
-   "lon": 32.204123555055936,
-   "lat": 50.14427632486469,
-   "km": 300
+   "id": "rmug3crxc",
+   "lon": 32.742021667877054,
+   "lat": 50.48759182195424,
+   "km": 250
   },
   {
-   "id": "rmug3i7e6",
-   "lon": 26.017260458989178,
-   "lat": 49.90632005193905,
-   "km": 300
+   "id": "rmug3cxxc",
+   "lon": 36.7054513388316,
+   "lat": 48.62677736105514,
+   "km": 250
   },
   {
-   "id": "rmug3i8kl",
-   "lon": 28.54325781773836,
-   "lat": 49.357190191341395,
-   "km": 300
+   "id": "rmug3d7we",
+   "lon": 38.692422712334015,
+   "lat": 48.721395045507634,
+   "km": 100
   },
   {
-   "id": "rmug3igh8",
-   "lon": 24.955606099034508,
-   "lat": 49.31779280652031,
-   "km": 300
+   "id": "rmug3d9h4",
+   "lon": 39.17602421064678,
+   "lat": 49.068326555166784,
+   "km": 100
   },
   {
-   "id": "rmug3is72",
-   "lon": 29.258660557639157,
-   "lat": 45.99235820295259,
-   "km": 155
+   "id": "rmug3daib",
+   "lon": 39.060380374093725,
+   "lat": 48.06958433039044,
+   "km": 100
   },
   {
-   "id": "rmug3j036",
-   "lon": 35.32257838856343,
-   "lat": 50.096228369741276,
-   "km": 155
+   "id": "rmug3dc9e",
+   "lon": 34.15077385861416,
+   "lat": 46.723910595954926,
+   "km": 100
+  },
+  {
+   "id": "rmug3deqe",
+   "lon": 36.67391211068077,
+   "lat": 47.2916167026699,
+   "km": 200
+  },
+  {
+   "id": "rmug3dg63",
+   "lon": 30.723511066223715,
+   "lat": 46.73442367200519,
+   "km": 200
+  },
+  {
+   "id": "rmug3dj9u",
+   "lon": 29.03090582212907,
+   "lat": 45.70414221907801,
+   "km": 66
+  },
+  {
+   "id": "rmug3dkqk",
+   "lon": 28.631408932218534,
+   "lat": 45.399263013619965,
+   "km": 66
+  },
+  {
+   "id": "rmug3dnz3",
+   "lon": 29.49348116834133,
+   "lat": 50.287843376998964,
+   "km": 200
+  },
+  {
+   "id": "rmug3dqrv",
+   "lon": 26.917777536023348,
+   "lat": 50.3614349093509,
+   "km": 200
+  },
+  {
+   "id": "rmug3dvbv",
+   "lon": 25.9085222351967,
+   "lat": 49.04730040306623,
+   "km": 200
+  },
+  {
+   "id": "rmug3dwmb",
+   "lon": 23.753341644889847,
+   "lat": 49.215509619870666,
+   "km": 200
+  },
+  {
+   "id": "rmug3dy2j",
+   "lon": 25.046449999073985,
+   "lat": 50.908114863965324,
+   "km": 200
   }
  ]
 }

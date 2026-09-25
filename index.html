@@ -20,6 +20,7 @@ canvas:active{cursor:grabbing}
 h1{font:700 1.1rem Orbitron,sans-serif;color:#fff;margin:0;letter-spacing:.12em;text-transform:uppercase}
 h2{font:600 1.05rem Orbitron,sans-serif;letter-spacing:.06em;margin:.6rem 0 .3rem}
 .sub,.hint{color:var(--dim);margin:.3rem 0 0;font-size:13px}
+#year{color:var(--gold);font-family:Orbitron,sans-serif;letter-spacing:.08em;font-size:12px;margin:.35rem 0 0}
 #info{padding:.9rem 1.1rem;border-bottom:1px solid var(--line)}
 .banner{height:8px;border:1px solid rgba(0,0,0,.5)}
 dl{margin:.5rem 0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem}
@@ -57,7 +58,7 @@ button:disabled{opacity:.35;cursor:default;border-color:var(--line)}
 <div id="app">
   <div id="map"><canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div><div id="scan"></div></div>
   <aside id="panel">
-    <header><h1 id="ttl"></h1><p class="sub" id="sub"></p></header>
+    <header><h1 id="ttl"></h1><p class="sub" id="year"></p><p class="sub" id="sub"></p></header>
     <section id="info"></section>
     <section id="tools" hidden></section>
     <section id="legend"></section>
@@ -73,6 +74,8 @@ if (!window.d3) document.getElementById("msg").textContent = "Couldn't load the 
 /* ---------- CONFIG ---------- */
 const CONFIG = {
   title: "Exodus World Map",
+  // In-universe "current" year shown in the header. Change this by hand whenever the story's timeline moves on.
+  year: 1979,
   claimsUrl: "claims.json",   // the file you edit & re-upload; sits next to this page
   // Size of each claimable cell in map pixels (map is 2000px wide; 8 is roughly 1.4 degrees).
   // Smaller = more, finer cells (slower). Changing it later re-numbers cells and breaks existing claims.
@@ -178,6 +181,7 @@ function mk(f, key, name, country) {
 }
 async function init() {
   $("ttl").textContent = CONFIG.title;
+  $("year").textContent = CONFIG.year;
   $("sub").textContent = EDIT ? "Super secret edit mod omgfggggg :3" : "Drag to pan, scroll to zoom, click a territory.";
   try {
     const [w, st, d] = await Promise.all([
