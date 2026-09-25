@@ -35,6 +35,15 @@
    "gov": "Технократична олігархічна система управління",
    "bloc": "",
    "desc": "Інформацію не надано"
+  },
+  "fmugv0otx": {
+   "name": "",
+   "color": "#ffffff",
+   "ruler": "",
+   "capital": "",
+   "gov": "",
+   "bloc": "",
+   "desc": ""
   }
  },
  "claims": {
@@ -499,7 +508,7 @@
   "s:USA-3534|57,31": "fmufzs1hp",
   "s:USA-3534|57,32": "fmufzs1hp",
   "s:USA-3551|62,37": "fmufzs1hp",
-  "s:USA-3551|63,37": "fmufzs1hp",
+  "s:USA-3551|63,37": "fmugv0otx",
   "s:USA-3551|64,37": "fmug2j250",
   "s:USA-3551|65,37": "fmug2j250",
   "s:USA-3551|66,37": "fmug2j250",
@@ -4722,7 +4731,8 @@
   "s:RUS-2364|150,23": "fmug2ph3r",
   "s:RUS-2364|151,23": "fmug2ph3r",
   "s:RUS-2361|150,24": "fmug2ph3r",
-  "s:RUS-283|148,30": "fmug2yk59"
+  "s:RUS-283|148,30": "fmug2yk59",
+  "s:RUS-2358|149,23": "fmugv0otx"
  },
  "labels": {
   "fmug2yk59": [
