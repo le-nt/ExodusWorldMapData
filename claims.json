@@ -44,6 +44,15 @@
    "gov": "",
    "bloc": "",
    "desc": ""
+  },
+  "fmuj81loj": {
+   "name": "The Central Floridian Republic",
+   "color": "#bfa840",
+   "ruler": "The Emergency Council",
+   "capital": "Tampa, FL",
+   "gov": "Republic",
+   "bloc": "Capitalist",
+   "desc": "after the world went to shit and most of Florida's government was wiped out leaving the national guard, stranded navy and marine units alongside local police to form a government headed by Local politicians, Generals, county sheriffs and the occasional wealthy business man."
   }
  },
  "claims": {
@@ -266,9 +275,9 @@
   "s:USA-3542|64,41": "fmufzs1hp",
   "s:USA-3542|66,41": "fmufzs1hp",
   "s:USA-3542|67,41": "fmufzs1hp",
-  "s:USA-3542|68,42": "fmufzs1hp",
-  "s:USA-3542|68,43": "fmufzs1hp",
-  "s:USA-3542|68,44": "fmufzs1hp",
+  "s:USA-3542|68,42": "fmuj81loj",
+  "s:USA-3542|68,43": "fmuj81loj",
+  "s:USA-3542|68,44": "fmuj81loj",
   "s:USA-3543|66,38": "fmufzs1hp",
   "s:USA-3543|66,39": "fmufzs1hp",
   "s:USA-3543|66,40": "fmufzs1hp",
