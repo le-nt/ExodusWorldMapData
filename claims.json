@@ -58,6 +58,16 @@
    "bloc": "Capitalist",
    "desc": "after the world went to shit and most of Florida's government was wiped out leaving the national guard, stranded navy and marine units alongside local police to form a government headed by Local politicians, Generals, county sheriffs and the occasional wealthy business man.",
    "emblem": "https://cdn.discordapp.com/attachments/1552475611925184643/1553598887594557561/00mx2jt.png?ex=6ab9d537&is=6ab883b7&hm=edcee9e3d6e01a02dd81aa3237ca690d45109647a06c0d117b585de6239588eb&"
+  },
+  "fmujaqfkd": {
+   "name": "Veritystan",
+   "color": "#ffdd00",
+   "ruler": "Lord verity (master of humanity)",
+   "capital": "Verity",
+   "gov": "Nationalist Socialist",
+   "bloc": "the overworld",
+   "desc": "Hey, it's me, it's Verity\nAsk me anything (I got a question)\nI know about a million things (Well, that's great)\nI'll do everything (Alright)",
+   "emblem": "https://pbs.twimg.com/media/HSckb2UW4AAA5np?format=jpg&name=900x900"
   }
  },
  "claims": {
@@ -4742,7 +4752,25 @@
   "s:RUS-2361|150,24": "fmug2ph3r",
   "s:RUS-283|148,30": "fmug2yk59",
   "s:RUS-2358|149,23": "fmug2ph3r",
-  "s:USA-3542|67,41": "fmugv0otx"
+  "s:USA-3542|67,41": "fmugv0otx",
+  "c:Somalia|153,60": "fmujaqfkd",
+  "c:Somalia|153,62": "fmujaqfkd",
+  "c:Somalia|154,59": "fmujaqfkd",
+  "c:Somalia|154,60": "fmujaqfkd",
+  "c:Somalia|154,61": "fmujaqfkd",
+  "c:Somalia|154,62": "fmujaqfkd",
+  "c:Somalia|155,59": "fmujaqfkd",
+  "c:Somalia|155,60": "fmujaqfkd",
+  "c:Somalia|155,61": "fmujaqfkd",
+  "c:Somalia|156,59": "fmujaqfkd",
+  "c:Somalia|156,60": "fmujaqfkd",
+  "c:Somalia|157,58": "fmujaqfkd",
+  "c:Somalia|157,59": "fmujaqfkd",
+  "c:Somalia|158,57": "fmujaqfkd",
+  "c:Somalia|158,58": "fmujaqfkd",
+  "c:Somalia|159,55": "fmujaqfkd",
+  "c:Somalia|159,56": "fmujaqfkd",
+  "c:Somalia|160,55": "fmujaqfkd"
  },
  "labels": {
   "fmug2yk59": [
