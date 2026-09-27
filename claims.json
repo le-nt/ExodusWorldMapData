@@ -7,7 +7,8 @@
    "capital": "Plymouth, NC",
    "gov": "Despotic",
    "bloc": "",
-   "desc": " A detachment of Fennec Marines deployed to secure a holding for the displaced Fennec people currently traveling by boat from the Eurasian region. "
+   "desc": " A detachment of Fennec Marines deployed to secure a holding for the displaced Fennec people currently traveling by boat from the Eurasian region. ",
+   "emblem": "https://cdn.discordapp.com/attachments/1552475611925184643/1552830384360656956/IMG_5266.jpg?ex=6ab9ac7d&is=6ab85afd&hm=fb9462264c6ad46e5be1683ac6bd0807294edacfa4279e545d703da3302467f5&"
   },
   "fmug2j250": {
    "name": "Tennessee Federative Republic",
@@ -16,25 +17,28 @@
    "capital": "Nashville, TN",
    "gov": "Constitutional Republic",
    "bloc": "",
-   "desc": "An unstable republic with a joint military-civil constitution that may cause problems down the line. Remnants of the old American parties and a hateful military that seeks revenge against the communists."
+   "desc": "An unstable republic with a joint military-civil constitution that may cause problems down the line. Remnants of the old American parties and a hateful military that seeks revenge against the communists.",
+   "emblem": "https://cdn.discordapp.com/attachments/1552475611925184643/1553486575558463580/Tennessee_Federative_Republic_flag.png?ex=6ab96c9d&is=6ab81b1d&hm=a2770583f5867600f7d589da2c2c2bb0ea4f0329f29101fa7d79bd04a081aeae&"
   },
   "fmug2ph3r": {
    "name": "Moscow Republic",
-   "color": "#141e78",
+   "color": "#7a1f1f",
    "ruler": "",
    "capital": "Moscow",
    "gov": "People's Republic",
    "bloc": "",
-   "desc": "Moscow initially emerged as a liberal republic after the collapse of the old Russian government. By 1975, however, the liberals had been overthrown and a communist government had taken power."
+   "desc": "Moscow initially emerged as a liberal republic after the collapse of the old Russian government. By 1975, however, the liberals had been overthrown and a communist government had taken power.",
+   "emblem": "https://cdn.discordapp.com/attachments/1552475611925184643/1553215713135697950/IMG_7245.png?ex=6ab9191b&is=6ab7c79b&hm=64986077c92aa72764160101fd92eba79cb673148ea25c1830122cc974eb3dd3&"
   },
   "fmug2yk59": {
    "name": "Українська спеціальна комісія",
-   "color": "#2c5181",
+   "color": "#fff700",
    "ruler": "Інформація недоступна",
    "capital": "Місцезнаходження не розголошується",
    "gov": "Технократична олігархічна система управління",
    "bloc": "",
-   "desc": "Інформацію не надано"
+   "desc": "Інформацію не надано",
+   "emblem": "https://cdn.discordapp.com/attachments/1543064472749477962/1553613849511338065/YCKv2.png?ex=6ab9e326&is=6ab891a6&hm=b12352a59f60c4b1f0ea3a1398b6640f6d50ed62d3759d23c91d26bf039fde23&"
   },
   "fmugv0otx": {
    "name": "",
@@ -47,12 +51,13 @@
   },
   "fmuj81loj": {
    "name": "The Central Floridian Republic",
-   "color": "#bfa840",
+   "color": "#5686b7",
    "ruler": "The Emergency Council",
    "capital": "Tampa, FL",
    "gov": "Republic",
    "bloc": "Capitalist",
-   "desc": "after the world went to shit and most of Florida's government was wiped out leaving the national guard, stranded navy and marine units alongside local police to form a government headed by Local politicians, Generals, county sheriffs and the occasional wealthy business man."
+   "desc": "after the world went to shit and most of Florida's government was wiped out leaving the national guard, stranded navy and marine units alongside local police to form a government headed by Local politicians, Generals, county sheriffs and the occasional wealthy business man.",
+   "emblem": "https://cdn.discordapp.com/attachments/1552475611925184643/1553598887594557561/00mx2jt.png?ex=6ab9d537&is=6ab883b7&hm=edcee9e3d6e01a02dd81aa3237ca690d45109647a06c0d117b585de6239588eb&"
   }
  },
  "claims": {
@@ -4888,5 +4893,6 @@
    "lat": 48.68874907687786,
    "km": 111
   }
- ]
+ ],
+ "banner": "Deadly anomalies, dangerous mutants, anarchists and bandits... None will stop Duty on its triumphant march towards saving the planet!\n\n"
 }
