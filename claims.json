@@ -277,9 +277,6 @@
   "s:USA-3537|74,33": "fmufzs1hp",
   "s:USA-3556|0": "fmufzs1hp",
   "s:USA-3555|0": "fmufzs1hp",
-  "s:USA-3542|64,41": "fmufzs1hp",
-  "s:USA-3542|66,41": "fmufzs1hp",
-  "s:USA-3542|67,41": "fmufzs1hp",
   "s:USA-3542|68,42": "fmuj81loj",
   "s:USA-3542|68,43": "fmuj81loj",
   "s:USA-3542|68,44": "fmuj81loj",
@@ -1523,7 +1520,6 @@
   "c:Haiti|74,49": "demo",
   "c:Jamaica|0": "demo",
   "c:Puerto Rico|0": "demo",
-  "c:Bahamas|71,44": "demo",
   "c:Colombia|71,57": "demo",
   "c:Colombia|71,58": "demo",
   "c:Colombia|71,59": "demo",
@@ -4745,7 +4741,8 @@
   "s:RUS-2364|151,23": "fmug2ph3r",
   "s:RUS-2361|150,24": "fmug2ph3r",
   "s:RUS-283|148,30": "fmug2yk59",
-  "s:RUS-2358|149,23": "fmug2ph3r"
+  "s:RUS-2358|149,23": "fmug2ph3r",
+  "s:USA-3542|67,41": "fmugv0otx"
  },
  "labels": {
   "fmug2yk59": [
@@ -4755,12 +4752,6 @@
  },
  "nukes": [],
  "redactions": [
-  {
-   "id": "rmug3cm5k",
-   "lon": 31.61887650301361,
-   "lat": 48.48547269044018,
-   "km": 250
-  },
   {
    "id": "rmug3cok0",
    "lon": 31.82771451030642,
@@ -4892,6 +4883,12 @@
    "lon": 28.57380382603942,
    "lat": 48.68874907687786,
    "km": 111
+  },
+  {
+   "id": "rmujahms4",
+   "lon": -64.78741865991039,
+   "lat": 18.05779603592947,
+   "km": 50
   }
  ],
  "banner": "Deadly anomalies, dangerous mutants, anarchists and bandits... None will stop Duty on its triumphant march towards saving the planet!\n\n"
