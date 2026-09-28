@@ -233,7 +233,7 @@
   "s:USA-3541|64,38": "fmufzs1hp",
   "s:USA-3541|64,39": "fmufzs1hp",
   "s:USA-3541|64,40": "fmufzs1hp",
-  "s:USA-3541|65,38": "fmufzs1hp",
+  "s:USA-3541|65,38": "fmugv0otx",
   "s:USA-3541|65,39": "fmufzs1hp",
   "s:USA-3541|65,40": "fmufzs1hp",
   "s:USA-3528|59,37": "fmufzs1hp",
@@ -337,8 +337,8 @@
   "s:USA-3530|58,35": "fmufzs1hp",
   "s:USA-3530|58,36": "fmufzs1hp",
   "s:USA-3530|59,36": "fmufzs1hp",
-  "s:USA-3548|63,36": "fmugv0otx",
-  "s:USA-3548|64,36": "fmufzs1hp",
+  "s:USA-3548|63,36": "fmug2j250",
+  "s:USA-3548|64,36": "fmugv0otx",
   "s:USA-3548|66,35": "fmufzs1hp",
   "s:USA-3548|66,36": "fmufzs1hp",
   "s:USA-3535|60,40": "fmufzs1hp",
@@ -3082,7 +3082,7 @@
   "s:RUS-2360|152,22": "fmufzs1hp",
   "s:RUS-2360|153,22": "fmufzs1hp",
   "s:RUS-2361|148,24": "fmufzs1hp",
-  "s:RUS-2361|149,24": "fmufzs1hp",
+  "s:RUS-2361|149,24": "fmugv0otx",
   "s:RUS-2362|149,26": "fmufzs1hp",
   "s:RUS-2362|150,26": "fmufzs1hp",
   "s:RUS-2362|151,26": "fmufzs1hp",
@@ -4770,8 +4770,10 @@
   "c:Somalia|159,55": "fmujaqfkd",
   "c:Somalia|159,56": "fmujaqfkd",
   "c:Somalia|160,55": "fmujaqfkd",
-  "s:USA-3542|66,41": "fmugv0otx",
-  "s:RUS-2358|150,22": "fmugv0otx"
+  "s:USA-3542|66,41": "fmuj81loj",
+  "s:RUS-2358|150,22": "fmug2ph3r",
+  "s:USA-3548|65,36": "fmugv0otx",
+  "s:USA-3542|64,41": "fmugv0otx"
  },
  "labels": {
   "fmug2yk59": [
