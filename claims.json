@@ -234,7 +234,6 @@
   "s:USA-3541|64,39": "fmug2j250",
   "s:USA-3541|64,40": "fmuj81loj",
   "s:USA-3541|65,38": "fmug2j250",
-  "s:USA-3541|65,39": "fmuj81loj",
   "s:USA-3541|65,40": "fmuj81loj",
   "s:USA-3528|59,37": "fmugv0otx",
   "s:USA-3528|60,37": "fmug2j250",
@@ -1510,7 +1509,7 @@
   "c:Guatemala|62,51": "demo",
   "c:Guatemala|62,52": "demo",
   "c:Belize|0": "demo",
-  "c:Cuba|68,46": "demo",
+  "c:Cuba|68,46": "fmuj81loj",
   "c:Cuba|69,46": "demo",
   "c:Cuba|69,47": "demo",
   "c:Cuba|71,47": "demo",
@@ -1573,8 +1572,6 @@
   "c:Colombia|77,60": "demo",
   "c:Colombia|77,61": "demo",
   "c:Panama|67,56": "demo",
-  "c:Panama|68,56": "demo",
-  "c:Panama|69,56": "demo",
   "c:Panama|70,56": "demo",
   "c:Costa Rica|65,55": "demo",
   "c:Costa Rica|66,55": "demo",
@@ -4771,7 +4768,8 @@
   "c:Bahamas|71,44": "fmug2e6ed",
   "s:USA-3528|61,37": "fmug2j250",
   "s:USA-3531|62,36": "fmug2j250",
-  "s:USA-3531|60,36": "fmugv0otx"
+  "s:USA-3531|60,36": "fmugv0otx",
+  "c:Panama|68,56": "fmuj81loj"
  },
  "labels": {
   "fmug2yk59": [
@@ -4920,5 +4918,5 @@
    "km": 50
   }
  ],
- "banner": "Deadly anomalies, dangerous mutants, anarchists and bandits... None will stop Duty on its triumphant march towards saving the planet!\n\n"
+ "banner": "Gibby wuz 'ere"
 }
