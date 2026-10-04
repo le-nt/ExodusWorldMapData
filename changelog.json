@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-04",
+  "enabled": true,
+  "title": "the update that adds the great lakes... and other stuff too i guess",
+  "date": "4 Oct 2026",
+  "intro": "new map yo",
+  "sections": [
+    {
+      "heading": "New look",
+      "items": [
+        "Redid the whole map UI. The map now takes up the entire screen, with panels on top, a purple grid frame and new fonts.",
+        "Faction list has its own panel now, and you can hide it if you want more space for the map.",
+        "Click a territory to see its info, click somewhere else to close it.",
+        "The Great Lakes are finally actual water, along with the other lakes. Oceans and coastlines also have a bit of glow now."
+      ]
+    },
+    {
+      "heading": "Added",
+      "items": [
+        "Mountains and higher ground now look different from flat land.",
+        "Faction borders now have a glow.",
+        "Added a labels button so you can switch between names, flags or no labels.",
+        "Added a share button that copies a link to your current view, or to a specific faction.",
+        "You can now save your current map view as a PNG.",
+        "Added zoom buttons, a zoom readout and a button to zoom straight to a territory from faction cards.",
+        "Land being claimed now has those moving stripe things."
+      ]
+    },
+    {
+      "heading": "Tweaked",
+      "items": [
+        "Hovering over factions now shows their colour, and region names are shown instead of cell numbers.",
+        "Removed the pan and zoom instructions from the bottom bar because you can probably figure that out."
+      ]
+    }
+  ]
+}

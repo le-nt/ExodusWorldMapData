@@ -4,73 +4,208 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Exodus World Map</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=Michroma&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0912;--panel:#0f0d1b;--line:#3b2a63;--gold:#c58bff;--ink:#e9e6f5;--dim:#9a94b8}
+:root{
+  --bg:#05040a; --panel:#0a0814; --panel2:#100c1f; --line:#251c46; --line2:#43327f;
+  --acc:#9a5cef; --gold:#b98cff; --hot:#d27bff; --ink:#e9e5f6; --dim:#8c85a8;
+  --grid:rgba(150,85,255,.20);
+  --ui:"Barlow",system-ui,sans-serif; --cond:"Barlow Semi Condensed","Barlow",sans-serif; --wide:"Michroma","Barlow",sans-serif;
+}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Source Sans 3",system-ui,sans-serif}
-body{display:flex;flex-direction:column}
-#sitebanner{flex:none;position:relative;background:linear-gradient(90deg,#2a1854,#4b2a86);border-bottom:2px solid var(--gold);color:var(--ink);padding:.55rem 2.2rem;font:600 13px/1.4 "Source Sans 3",sans-serif;text-align:center}
-#sitebanner button{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--dim);font-size:16px;line-height:1;padding:.1rem .5rem;cursor:pointer}
-#sitebanner button:hover{color:var(--gold)}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--ui)}
+body{display:flex;flex-direction:column;overflow:hidden}
+
+/* alert strip */
+#sitebanner{flex:none;position:relative;background:linear-gradient(90deg,#1a0d38,#2f1767 50%,#1a0d38);border-bottom:1px solid var(--acc);
+  color:var(--ink);padding:.5rem 2.4rem;font:600 12px/1.4 var(--cond);letter-spacing:.14em;text-transform:uppercase;text-align:center}
+#sitebanner button{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--dim);font-size:14px;line-height:1;padding:.2rem .5rem}
+#sitebanner button:hover{color:#fff;background:none}
+
 #app{display:flex;flex:1;min-height:0}
-#map{flex:1;position:relative;min-width:0;box-shadow:inset 0 0 120px rgba(0,0,0,.55)}
+#map{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
+#stage{flex:1;position:relative;min-height:0;background:#030308}
 canvas{position:absolute;inset:0;display:block;width:100%;height:100%;cursor:grab}
 canvas:active{cursor:grabbing}
-#msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font-family:Cinzel,serif;letter-spacing:.05em;text-align:center;padding:2rem;pointer-events:none}
-#tip{position:absolute;pointer-events:none;background:rgba(15,19,22,.92);border:1px solid var(--line);padding:.3rem .6rem;font-size:13px;display:none;white-space:nowrap}
-#panel{width:320px;background:var(--panel);border-left:2px solid var(--line);display:flex;flex-direction:column;min-height:0}
-#panel header{padding:1rem 1.1rem .8rem;border-bottom:2px solid #7a3fc4;background:repeating-linear-gradient(0deg,rgba(150,80,255,.18) 0 1px,transparent 1px 12px),repeating-linear-gradient(90deg,rgba(150,80,255,.18) 0 1px,transparent 1px 12px),linear-gradient(#1c0f38,#120b26)}
-h1{font:700 1.1rem Orbitron,sans-serif;color:#fff;margin:0;letter-spacing:.12em;text-transform:uppercase}
-h2{font:600 1.05rem Orbitron,sans-serif;letter-spacing:.06em;margin:.6rem 0 .3rem}
-.sub,.hint{color:var(--dim);margin:.3rem 0 0;font-size:13px}
-#year{color:var(--gold);font-family:Orbitron,sans-serif;letter-spacing:.08em;font-size:12px;margin:.35rem 0 0}
-#info{padding:.9rem 1.1rem;border-bottom:1px solid var(--line)}
-.banner{height:8px;border:1px solid rgba(0,0,0,.5)}
-img.emblem{display:block;max-width:72px;max-height:72px;margin:.6rem 0 0;border:1px solid var(--line);background:#0d0b18;object-fit:contain;padding:2px}
-dl{margin:.5rem 0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem}
-dt{color:var(--dim)}dd{margin:0}
-#info p.desc{margin:.5rem 0 0}
-#tools{padding:.7rem 1.1rem;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.4rem}
-#tools label{flex-basis:100%;font-size:13px;color:var(--dim)}
-label{display:block;font-size:13px;color:var(--dim);margin-top:.5rem}
-input,textarea{width:100%;background:#12171a;border:1px solid var(--line);color:var(--ink);padding:.35rem .5rem;font:inherit}
-input[type=color]{height:32px;padding:2px}
+#vig{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px 10px rgba(0,0,0,.7),inset 0 14px 22px -10px rgba(60,20,120,.35),inset 0 -14px 22px -10px rgba(60,20,120,.25)}
+#msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);font:500 13px var(--cond);letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:2rem;pointer-events:none;line-height:1.8}
+#msg small{letter-spacing:.04em;text-transform:none;font-family:var(--ui)}
+
+/* top and bottom frame, the signature grid bars */
+.frame{flex:none;position:relative;z-index:3;
+  background:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 10px),linear-gradient(#170b33,#0a0618)}
+#frameTop{height:40px;border-bottom:2px solid #7a3fd0;box-shadow:0 2px 16px rgba(130,60,230,.35)}
+#frameBot{height:26px;border-top:2px solid #7a3fd0;box-shadow:0 -2px 16px rgba(130,60,230,.25)}
+.plate{position:absolute;left:50%;top:0;transform:translateX(-50%);height:52px;width:max-content;max-width:calc(100% - 16px);
+  background:#a468f2;clip-path:polygon(0 0,100% 0,calc(100% - 24px) 100%,24px 100%)}
+.plate .in{height:50px;display:flex;align-items:center;justify-content:center;gap:.8rem;padding:0 54px 3px;
+  background:linear-gradient(#241250,#0f0825);clip-path:polygon(2px 0,calc(100% - 2px) 0,calc(100% - 25px) 100%,25px 100%)}
+.plate svg{flex:none;width:28px;height:28px}
+h1{margin:0 -.3em 0 0;min-width:0;font:400 12px var(--wide);color:#fff;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 12px rgba(190,130,255,.55)}
+
+#tip{position:absolute;pointer-events:none;z-index:4;background:rgba(9,6,19,.96);border:1px solid var(--line2);border-top:2px solid var(--acc);
+  padding:.35rem .7rem .4rem;font-size:13px;display:none;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+#tip b{font:600 14px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+#tip .chip{display:inline-block;width:12px;height:8px;margin-right:.45rem;border:1px solid rgba(255,255,255,.25)}
+#tip span.who{color:var(--dim)}
+
+/* side panel */
+#panel{width:332px;background:var(--panel);border-left:2px solid #7a3fd0;display:flex;flex-direction:column;min-height:0;overflow-y:auto;position:relative;z-index:2;
+  box-shadow:-6px 0 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:#3a2a70 transparent}
+#panel::-webkit-scrollbar{width:8px}#panel::-webkit-scrollbar-thumb{background:#3a2a70}
+#panel header{position:sticky;top:0;z-index:2;padding:.8rem 1.1rem .85rem;border-bottom:2px solid #7a3fd0;
+  background:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 10px),linear-gradient(#170b33,#0a0618)}
+.kicker{margin:0;font:600 10px var(--cond);letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+#year{margin:.1rem 0 0;font:400 26px/1.1 var(--wide);color:#fff;letter-spacing:.08em;text-shadow:0 0 14px rgba(170,110,255,.6)}
+.sub,.hint{color:var(--dim);margin:.35rem 0 0;font-size:12.5px}
+#panel header .sub{margin-top:.5rem;font-size:12px}
+
+#info{padding:1rem 1.1rem 1.1rem;border-bottom:1px solid var(--line);background:linear-gradient(var(--panel2),var(--panel))}
+h2{font:700 1.3rem/1.15 var(--cond);letter-spacing:.09em;text-transform:uppercase;margin:.7rem 0 .2rem;color:#fff}
+.banner{height:4px;border:0;box-shadow:0 0 0 1px rgba(0,0,0,.6)}
+img.emblem{display:block;max-width:84px;max-height:56px;margin:.8rem 0 0;border:1px solid var(--line2);background:#0b0818;object-fit:contain;padding:2px;box-shadow:0 0 0 1px #000,0 4px 12px rgba(0,0,0,.5)}
+dl{margin:.7rem 0 0;display:grid;grid-template-columns:max-content 1fr;gap:0 1.1rem}
+dt,dd{padding:.3rem 0;border-bottom:1px solid #1b1535;margin:0}
+dt{color:var(--dim);font:600 10.5px/1.9 var(--cond);letter-spacing:.2em;text-transform:uppercase}
+#info p.desc{margin:.8rem 0 0;color:#c9c3de;font-size:13.5px}
+
+#tools{padding:.8rem 1.1rem 1rem;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.4rem;background:#0c0919}
+#tools label{flex-basis:100%;font-size:12px;color:var(--dim)}
+label{display:block;font:600 10.5px var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:.6rem}
+input,textarea{width:100%;background:#07050f;border:1px solid var(--line2);color:var(--ink);padding:.38rem .5rem;font:inherit;font-size:13.5px;margin-top:.2rem;border-radius:0}
+input:focus,textarea:focus,select:focus{border-color:var(--acc);outline:0;box-shadow:0 0 0 1px var(--acc)}
+input[type=color]{height:30px;padding:2px}
 input[type=checkbox]{width:auto}
-select{background:#12171a;border:1px solid var(--line);color:var(--ink);padding:.3rem .4rem;font:inherit}
-button{background:#241a3d;color:var(--ink);border:1px solid var(--line);padding:.35rem .7rem;font:inherit;cursor:pointer}
-button:hover{border-color:var(--gold)}button.on{background:var(--gold);color:#161b1f}
-button:disabled{opacity:.35;cursor:default;border-color:var(--line)}
-#panel{overflow-y:auto}
-#panel header{position:sticky;top:0;z-index:2}
-#legend{}
-.row{display:flex;align-items:center;gap:.6rem;padding:.4rem 1.1rem;cursor:pointer;border-left:3px solid transparent}
-.row:hover{background:#1c1730}.row.on{background:#261c45;border-left-color:var(--gold)}
-.row i{width:16px;height:16px;border:1px solid rgba(0,0,0,.6);flex:none}
-.row img.rowEmblem{width:16px;height:16px;object-fit:contain;flex:none;background:#0d0b18}
-.row b{margin-left:auto;color:var(--dim);font-weight:400}
-:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
-@media(max-width:760px){#app{flex-direction:column}#map{flex:1 1 55%}#panel{width:auto;flex:1 1 45%;border-left:0;border-top:2px solid var(--line);min-height:0}}
-#scan{position:absolute;inset:0;pointer-events:none;z-index:5;mix-blend-mode:overlay;opacity:.5;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.65) 0px,rgba(0,0,0,.65) 1px,transparent 1px,transparent 3px);
-  background-size:100% 3px;animation:scanmove 8s linear infinite}
-#scan::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.18) 50%),linear-gradient(90deg,rgba(255,0,0,.02),rgba(0,255,0,.01),rgba(0,0,255,.02));
-  background-size:100% 4px,3px 100%}
-@keyframes scanmove{from{background-position:0 0}to{background-position:0 60px}}
+select{background:#07050f;border:1px solid var(--line2);color:var(--ink);padding:.32rem .4rem;font:inherit;font-size:13px;border-radius:0}
+button{background:linear-gradient(#1f1640,#120b27);color:var(--ink);border:1px solid var(--line2);padding:.34rem .75rem;font:600 11px var(--cond);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:0;transition:border-color .12s,background .12s}
+button:hover{border-color:var(--hot);background:linear-gradient(#2a1d57,#170f33)}
+button.on{background:var(--acc);border-color:var(--acc);color:#0a0618}
+button:disabled{opacity:.3;cursor:default;border-color:var(--line);background:#120b27}
+
+#legend input{margin-top:0}
+.row{display:flex;align-items:center;gap:.65rem;padding:.4rem 1.1rem;cursor:pointer;border-left:3px solid transparent;border-bottom:1px solid #120e24;font-size:13.5px}
+.row:hover{background:#150f2b}
+.row.on{background:linear-gradient(90deg,#2b1c5a,#150f2b);border-left-color:var(--hot)}
+.row i{width:22px;height:13px;border:1px solid rgba(0,0,0,.7);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);flex:none}
+.row img.rowEmblem{width:22px;height:13px;object-fit:contain;flex:none;background:#0b0818}
+.row b{margin-left:auto;color:var(--dim);font-weight:500;font-variant-numeric:tabular-nums;font-size:12.5px}
+:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
+@media(max-width:760px){
+  #app{flex-direction:column}#map{flex:1 1 55%}
+  #panel{width:auto;flex:1 1 45%;border-left:0;border-top:2px solid #7a3fd0}
+  .plate .in{padding:0 40px 3px;gap:.55rem}h1{letter-spacing:.18em;font-size:10px}
+}
+/* layout v2: fixed header, independently scrolling legend (view mode); whole panel scrolls in edit mode */
+#panel{overflow:hidden}
+body.edit #panel{overflow-y:auto}
+#panel header{position:relative;flex:none}
+body.edit #panel header{position:sticky}
+.sub:empty{display:none}
+#info{flex:0 1 auto;max-height:46%;overflow:auto;scrollbar-width:thin;scrollbar-color:#3a2a70 transparent}
+body.edit #info{max-height:none;overflow:visible}
+#tools{flex:none}
+#legend{flex:1;min-height:0;display:flex;flex-direction:column}
+body.edit #legend{flex:none}
+.lhead{flex:none;padding:.65rem 1.1rem .5rem;background:var(--panel);border-bottom:1px solid var(--line)}
+.list{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#3a2a70 transparent}
+body.edit .list{overflow:visible}
+.idhead{display:flex;gap:.85rem;align-items:center;margin-top:.85rem}
+.idhead img.emblem{margin:0;flex:none}
+.idhead h2{margin:0}
+.idhead .hint{margin:.2rem 0 0}
+.focusbtn{margin-top:.9rem;width:100%}
+.mapctl{position:absolute;right:14px;bottom:16px;z-index:4;display:flex;flex-direction:column;gap:4px}
+.mapctl button{width:30px;height:30px;padding:0;font:500 16px/1 var(--ui);letter-spacing:0;background:rgba(14,9,30,.88)}
+#status{display:flex;justify-content:space-between;align-items:center;height:100%;padding:0 16px;font:600 10px var(--cond);letter-spacing:.22em;text-transform:uppercase;color:#a99fd0;white-space:nowrap;overflow:hidden}
+#zoomRead{color:var(--hot)}
+@media(max-width:760px){
+  #year{font-size:18px}#panel header{padding:.5rem 1rem}.kicker{display:none}
+  #info{max-height:38%}#hintTxt{display:none}#status{justify-content:flex-end}
+}
+/* layout v3: full-bleed map with floating HUD panels */
+[hidden]{display:none!important}
+#frameBot{height:30px}
+#dock,#card{position:absolute;top:14px;z-index:5;display:flex;flex-direction:column;max-height:calc(100% - 28px);
+  background:rgba(9,7,19,.94);border:1px solid var(--line2);border-top:2px solid var(--acc);box-shadow:0 10px 30px rgba(0,0,0,.6)}
+#dock{left:14px;width:280px}
+#card{right:14px;width:330px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#3a2a70 transparent}
+body.edit #card{width:352px}
+#card.hide{display:none}
+.dockhead{flex:none;display:flex;align-items:center;flex-wrap:wrap;gap:.2rem .6rem;padding:.55rem .9rem .65rem;border-bottom:1px solid var(--line2);
+  background:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 10px),linear-gradient(#170b33,#0a0618)}
+.dockhead>div{flex:1}
+.dockhead #year{font-size:21px}
+.dockhead .sub{flex-basis:100%;margin:.3rem 0 0;font-size:12px}
+#dockTgl{width:26px;height:26px;padding:0;font-size:12px;letter-spacing:0}
+#dock.min #legend{display:none}
+#dock.min #dockTgl{transform:rotate(180deg)}
+#dock.min .dockhead{border-bottom:0}
+#info{flex:none;max-height:none;overflow:visible;border-bottom:0;background:none}
+#legend{background:none}
+body.edit #legend{flex:1}
+body.edit .list{overflow-y:auto}
+.lhead{background:transparent}
+#cardX{position:absolute;right:8px;top:8px;width:24px;height:24px;padding:0;font-size:11px;letter-spacing:0;z-index:1}
+body.edit #cardX{display:none}
+#status .right{display:flex;align-items:center;gap:.9rem}
+.mapctl{position:static;display:flex;flex-direction:row;gap:4px}
+.mapctl button{width:24px;height:20px;font-size:13px;background:#150e2e;border-color:var(--line2)}
+@media(max-width:760px){
+  #dock{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:42%}
+  #card,body.edit #card{left:8px;right:8px;top:8px;width:auto;max-height:46%}
+}
+.wipSw{background:repeating-linear-gradient(-45deg,#f2f2f4 0 4px,#2a2b30 4px 8px)!important}
+.banner.wipSw{height:6px}
+.wipTag{font:600 9.5px var(--cond);letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:#2a2b30;background:#f2f2f4;padding:1px 5px;margin-left:.1rem}
+.tool{height:20px;padding:0 .6rem;font-size:10px;background:#150e2e}
+@media(max-width:760px){#zoomRead{display:none}}
+
+/* changelog modal (shown once per visitor, driven by changelog.json) */
+#clog{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:1rem;background:rgba(3,2,8,.78);backdrop-filter:blur(3px)}
+#clogBox{width:min(520px,100%);max-height:min(80vh,640px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line2);border-top:2px solid var(--acc);box-shadow:0 20px 60px rgba(0,0,0,.75),0 0 40px rgba(130,60,230,.25)}
+#clogHead{flex:none;padding:.8rem 1.1rem .9rem;border-bottom:2px solid #7a3fd0;
+  background:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 10px),linear-gradient(#170b33,#0a0618)}
+#clogHead h3{margin:.15rem 0 0;font:400 17px/1.25 var(--wide);letter-spacing:.08em;color:#fff;text-transform:uppercase;text-shadow:0 0 14px rgba(170,110,255,.6)}
+#clogBody{flex:1;min-height:0;overflow-y:auto;padding:.4rem 1.1rem 1rem;scrollbar-width:thin;scrollbar-color:#3a2a70 transparent}
+#clogBody h4{margin:1rem 0 .3rem;font:700 12px var(--cond);letter-spacing:.2em;text-transform:uppercase;color:var(--hot)}
+#clogBody p{margin:.6rem 0 0;color:#c9c3de;font-size:13.5px}
+#clogBody ul{margin:.2rem 0 0;padding-left:1.1rem;color:#c9c3de;font-size:13.5px}
+#clogBody li{margin:.3rem 0}
+#clogFoot{flex:none;display:flex;justify-content:flex-end;padding:.7rem 1.1rem;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 <div id="sitebanner" hidden></div>
 <div id="app">
-  <div id="map"><canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div><div id="scan"></div></div>
-  <aside id="panel">
-    <header><h1 id="ttl"></h1><p class="sub" id="year"></p><p class="sub" id="sub"></p></header>
-    <section id="info"></section>
-    <section id="tools" hidden></section>
-    <section id="legend"></section>
-  </aside>
+  <div id="map">
+    <div id="frameTop" class="frame">
+      <div class="plate"><div class="in">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <defs><radialGradient id="ball" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#f4eaff"/><stop offset=".45" stop-color="#9a6bdc"/><stop offset="1" stop-color="#2a1260"/></radialGradient></defs>
+          <circle cx="16" cy="16" r="14" fill="url(#ball)" stroke="#c9a6ff" stroke-width=".8"/>
+          <g fill="none" stroke="rgba(20,8,50,.55)" stroke-width=".7">
+            <ellipse cx="16" cy="16" rx="14" ry="5"/><ellipse cx="16" cy="16" rx="14" ry="10"/>
+            <ellipse cx="16" cy="16" rx="5" ry="14"/><ellipse cx="16" cy="16" rx="10" ry="14"/><line x1="16" y1="2" x2="16" y2="30"/>
+          </g>
+        </svg>
+        <h1 id="ttl"></h1>
+      </div></div>
+    </div>
+    <div id="stage">
+      <canvas id="cv"></canvas><div id="msg">Loading map data…</div><div id="tip"></div><div id="vig"></div>
+      <aside id="dock">
+        <header class="dockhead"><div><p class="kicker">Current year</p><p id="year"></p></div>
+          <button id="dockTgl" title="Show or hide the faction list" aria-label="Toggle faction list">▾</button><p class="sub" id="sub"></p></header>
+        <section id="legend"></section>
+      </aside>
+      <aside id="card" class="hide"><button id="cardX" title="Close" aria-label="Close">✕</button><section id="info"></section><section id="tools" hidden></section></aside>
+    </div>
+    <div id="frameBot" class="frame"><div id="status"><span id="hintTxt">Drag to pan · Scroll to zoom · Click a territory</span><span class="right"><button class="tool" id="lblBtn">Labels: Names</button><button class="tool" id="shareBtn">Share</button><button class="tool" id="pngBtn">Save PNG</button><span id="zoomRead"></span><div class="mapctl"><button id="zin" title="Zoom in" aria-label="Zoom in">+</button><button id="zout" title="Zoom out" aria-label="Zoom out">−</button><button id="zhome" title="Reset view" aria-label="Reset view">⌂</button></div></span></div></div>
+  </div>
 </div>
+<div id="clog" hidden role="dialog" aria-modal="true" aria-labelledby="clogTitle"><div id="clogBox"><div id="clogHead"><p class="kicker" id="clogDate"></p><h3 id="clogTitle"></h3></div><div id="clogBody"></div><div id="clogFoot"><button id="clogOk" class="on">Got it</button></div></div></div>
 <input type="file" id="file" accept=".json" hidden>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -83,7 +218,8 @@ const CONFIG = {
   title: "Exodus World Map",
   // In-universe "current" year shown in the header. Change this by hand whenever the story's timeline moves on.
   year: 1979,
-  claimsUrl: "claims.json",   // the file you edit & re-upload; sits next to this page
+  claimsUrl: "claims.json",
+  changelogUrl: "changelog.json",   // separate file for the "what's new" popup. Change its "id" to show it again to everyone.   // the file you edit & re-upload; sits next to this page
   // Size of each claimable cell in map pixels (map is 2000px wide; 8 is roughly 1.4 degrees).
   // Smaller = more, finer cells (slower). Changing it later re-numbers cells and breaks existing claims.
   cellSize: 8,
@@ -91,6 +227,12 @@ const CONFIG = {
   countriesUrl: [
     "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json",
     "https://unpkg.com/world-atlas@2/countries-50m.json"
+  ],
+  // Lakes are cut out of the land so the Great Lakes, Victoria, Baikal etc. show as water.
+  // Swap "50m" for "10m" for many more small lakes (about 5 MB instead of under 1 MB).
+  lakesUrl: [
+    "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_50m_lakes.geojson",
+    "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_lakes.geojson"
   ],
   // Optional finer subdivisions (states/provinces). Countries not in this file stay whole.
   // Swap "50m" for "10m" for every country's provinces (much bigger download).
@@ -124,11 +266,26 @@ const DEFAULT = { banner: "", factions: {
   demo: { name: "Example Republic", color: "#4a7fb5", emblem: "", ruler: "President Example", capital: "Capital City", gov: "Republic", bloc: "", desc: "Replace this with your first faction. Add ?edit to the page URL to edit." }
 }, claims: {}, labels: {} };
 const FIELDS = [["name","Name"],["color","Colour"],["emblem","Emblem / flag URL"],["ruler","Leader"],["capital","Capital"],["gov","Government"],["bloc","Alliance / bloc"],["desc","About"]];
-const OCEAN = "#0a1220", LAND = "#4b4f45";
+const OCEAN_IN = "#0a0b18", OCEAN_OUT = "#020207", LAND = "#3b3e3a";
+const LABEL_FONT = '600 %spx "Barlow Semi Condensed", "Barlow", sans-serif';
+// A faction coloured exactly #ffffff (255,255,255) is treated as "in progress" land that is still being claimed
+const isWip = f => { if (!f || !f.color) return false; const c = d3.rgb(f.color); return c.r === 255 && c.g === 255 && c.b === 255; };
+const WIP_S = 36, REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let hasWip = false, wipPat = null, wipDpr = 0, wipPhase = 0;
+function wipPattern() {   // white and dark grey diagonal tape, redrawn when the pixel ratio changes
+  if (wipPat && wipDpr === dpr) return wipPat;
+  const S = Math.round(WIP_S * dpr), c = document.createElement("canvas"); c.width = c.height = S;
+  const x = c.getContext("2d"); x.fillStyle = "#2a2b30"; x.fillRect(0, 0, S, S); x.fillStyle = "#f2f2f4";
+  for (const k of [-1, 0]) { x.beginPath(); x.moveTo(k*S, 0); x.lineTo(k*S + S/2, 0); x.lineTo(k*S + S*1.5, S); x.lineTo(k*S + S, S); x.closePath(); x.fill(); }
+  wipDpr = dpr; return wipPat = ctx.createPattern(c, "repeat");
+}
+let borderCv = null, reliefCv = null, labelMode = "names", bTimer, hashT; const flagCache = {};
+let lakePath = null, landPath = null, gratPath = null, grainPat = null, blotchPat = null;
 
 /* ---------- state ---------- */
 const $ = id => document.getElementById(id);
 const EDIT = new URLSearchParams(location.search).has("edit");
+const dn = r => EDIT ? r.name : r.parent.name;   // viewers see the region name, not the internal cell number
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv = $("cv"), ctx = cv.getContext("2d");
 let data, regions = [], parents = [], labels = [], cur = null, picked = null, hover = null;
@@ -137,7 +294,22 @@ let scope = "cell", placing = false, raf;
 let redacting = false, history = [], hIndex = -1, legendFilter = "";
 const proj = d3.geoEquirectangular().fitExtent([[0,0],[2000,1000]], {type:"Sphere"});
 const gp = d3.geoPath(proj);
-const PPD = proj([1,0])[0] - proj([0,0])[0];   // map pixels per degree (equirectangular: same for lon & lat)
+const PPD = proj([1,0])[0] - proj([0,0])[0];
+function makeTextures() {   // terrain grain + soft blotches so land reads as ground rather than flat fill
+  const g = document.createElement("canvas"); g.width = g.height = 192;
+  const gx = g.getContext("2d"), im = gx.createImageData(192, 192);
+  for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() < .5 ? 0 : 255;
+    im.data[i] = im.data[i+1] = im.data[i+2] = v; im.data[i+3] = Math.random() * 44; }
+  gx.putImageData(im, 0, 0);
+  const b = document.createElement("canvas"); b.width = b.height = 512; const bx = b.getContext("2d");
+  for (let i = 0; i < 150; i++) {
+    const x = Math.random()*512, y = Math.random()*512, r = 30 + Math.random()*90, c = Math.random() < .5 ? "255,255,255" : "0,0,0", a = .06 + Math.random()*.1;
+    for (const dx of [-512, 0, 512]) for (const dy of [-512, 0, 512]) {
+      const gr = bx.createRadialGradient(x+dx, y+dy, 0, x+dx, y+dy, r);
+      gr.addColorStop(0, `rgba(${c},${a})`); gr.addColorStop(1, `rgba(${c},0)`);
+      bx.fillStyle = gr; bx.fillRect(x+dx-r, y+dy-r, r*2, r*2); } }
+  grainPat = ctx.createPattern(g, "repeat"); blotchPat = ctx.createPattern(b, "repeat");
+}   // map pixels per degree (equirectangular: same for lon & lat)
 
 /* ---------- redacted areas ---------- */
 function redactGeom(rd) {   // circular zone in map-pixel space; screen position recomputed each draw via the current transform
@@ -147,7 +319,7 @@ function redactGeom(rd) {   // circular zone in map-pixel space; screen position
 function inRedaction(x, y) {   // x,y in map-pixel space
   return data.redactions.some(rd => { const g = redactGeom(rd); return Math.hypot(x-g.mx, y-g.my) <= g.r; });
 }
-const zoom = d3.zoom().on("zoom", e => { t = e.transform; draw(); });
+const zoom = d3.zoom().on("zoom", e => { t = e.transform; draw(); const z = $("zoomRead"); if (z) z.textContent = "Zoom ×" + (t.k / k0).toFixed(1); saveHash(); });
 const sel = d3.select(cv).call(zoom).on("dblclick.zoom", null);
 
 /* ---------- data ---------- */
@@ -187,13 +359,15 @@ function mk(f, key, name, country) {
   return P;
 }
 async function init() {
+  document.title = CONFIG.title; document.body.classList.toggle("edit", EDIT);
   $("ttl").textContent = CONFIG.title;
   $("year").textContent = CONFIG.year;
-  $("sub").textContent = EDIT ? "Super secret edit mod omgfggggg :3" : "Drag to pan, scroll to zoom, click a territory.";
+  $("sub").textContent = EDIT ? "Edit mode. Changes are kept as a local draft until you export claims.json." : "";
   try {
-    const [w, st, d] = await Promise.all([
+    const [w, st, lk, d] = await Promise.all([
       getJSON(CONFIG.countriesUrl),
       getJSON(CONFIG.statesUrl).catch(() => null),
+      getJSON(CONFIG.lakesUrl).catch(() => null),
       loadClaims()
     ]);
     data = d;
@@ -206,6 +380,10 @@ async function init() {
       parents.push(mk(f, "s:" + (p.adm1_code || p.name + p.admin), p.name + ", " + p.admin, p.admin)); });
     parents = parents.filter(Boolean);
     regions = parents.flatMap(p => p.cells);
+    landPath = new Path2D(); parents.forEach(p => landPath.addPath(p.p));
+    if (lk) { lakePath = new Path2D();   // water bodies drawn over the land; ignored when picking
+      lk.features.forEach(f => { const dd = gp(f); if (dd) lakePath.addPath(new Path2D(dd)); }); }
+    gratPath = new Path2D(gp(d3.geoGraticule().step([30, 30])())); makeTextures();
     parents.forEach(p => { const f = data.claims[p.key];   // upgrade older whole-region claims to cells
       if (f) { p.cells.forEach(c => data.claims[c.key] = f); delete data.claims[p.key]; } });
     $("msg").style.display = "none";
@@ -215,20 +393,22 @@ async function init() {
     return;
   }
   if (EDIT) { buildTools(); snapshot(); updateUndoBtns(); }
-  try { await document.fonts.load('700 20px "Source Sans 3"'); } catch (e) {}
-  computeLabels(); renderLegend(); renderInfo(); renderSiteBanner(); resize();
+  try { await Promise.all([document.fonts.load('600 20px "Barlow Semi Condensed"'), document.fonts.load('400 14px "Barlow"'), document.fonts.load('400 14px "Michroma"')]); } catch (e) {}
+  computeLabels(); renderLegend(); renderInfo(); renderSiteBanner(); resize(); if (!EDIT) applyHash();
 }
 
 /* ---------- labels ---------- */
-function tint(hex, v) { const c = hex ? d3.interpolateRgb(LAND, hex)(.78) : LAND; return d3.color(c).brighter(v * .5).formatHex(); }
+function tint(hex, v) {   // faction colour pulled toward dark terrain and slightly desaturated, like the in-game political map
+  const c = d3.hsl(hex ? d3.interpolateRgb(LAND, hex)(.74) : LAND); c.s *= .82; c.l *= .92;
+  return d3.color(c).brighter(v * .5).formatHex(); }
 function recolor() {   // precompute each cell's fill: faction colour blended into dark terrain, with slight per-cell variation
-  const cache = {};
-  for (const r of regions) { const id = data.claims[r.key], f = data.factions[id]; r.id = f ? id : null;
+  const cache = {}; hasWip = false;
+  for (const r of regions) { const id = data.claims[r.key], f = data.factions[id]; r.id = f ? id : null; r.wip = isWip(f); if (r.wip) hasWip = true;
     const k = (f ? f.color : "") + "|" + r.v; r.fill = cache[k] ||= tint(f && f.color, r.v); }
   for (const P of parents) {   // one aggregated fill per parent (its most common owner), used when zoomed out
     const counts = {}; let best = "", bestN = -1;
     for (const r of P.cells) { const k = r.id || ""; const n = (counts[k] = (counts[k]||0) + 1); if (n > bestN) { bestN = n; best = k; } }
-    P.domFill = tint(best && data.factions[best] && data.factions[best].color, 0);
+    P.domFill = tint(best && data.factions[best] && data.factions[best].color, 0); P.domWip = !!best && isWip(data.factions[best]);
   }
 }
 function biggest(L) {   // largest connected chunk of a faction's cells (ignores far-off islands/exclaves)
@@ -242,10 +422,11 @@ function biggest(L) {   // largest connected chunk of a faction's cells (ignores
   return Object.values(g).sort((a, b) => b.length - a.length)[0];
 }
 function computeLabels() {
-  recolor(); labels = []; const g = {};
+  recolor(); clearTimeout(bTimer); bTimer = setTimeout(buildBorders, EDIT ? 350 : 30); labels = []; const g = {};
   regions.forEach(r => { if (r.id) (g[r.id] ||= []).push(r); });
   ctx.setTransform(1,0,0,1,0,0);
   for (const f in g) {
+    if (isWip(data.factions[f])) continue;   // in-progress land gets no label
     const cl = biggest(g[f]), n = data.factions[f].name.toUpperCase(), m = cl.length;
     let mx = 0, my = 0; cl.forEach(r => { mx += r.c[0]; my += r.c[1]; }); mx /= m; my /= m;
     let sxx = 0, sxy = 0, syy = 0;
@@ -260,9 +441,9 @@ function computeLabels() {
     const L = t1 - t0 + G*1.3, W = s1 - s0 + G*1.3, tc = (t0+t1)/2, sc = (s0+s1)/2;
     let x = mx + ux*tc - uy*sc, y = my + uy*tc + ux*sc;
     const q = data.labels[f] && proj(data.labels[f]); if (q) [x, y] = q;
-    ctx.font = '700 100px "Source Sans 3", sans-serif'; ctx.letterSpacing = "18px";
+    ctx.font = LABEL_FONT.replace("%s", 100); ctx.letterSpacing = "20px";
     const w100 = ctx.measureText(n).width; ctx.letterSpacing = "0px";
-    labels.push({ n, x, y, a, w100, s: Math.min(46, .9*L/w100*100, W*.9), imp: m + (q ? 1e6 : 0) });
+    labels.push({ n, id: f, x, y, a, w100, s: Math.min(46, .9*L/w100*100, W*.9), imp: m + (q ? 1e6 : 0) });
   }
   // stop overlaps: biggest factions first; a clashing label shrinks, and is dropped if it still clashes
   const circ = l => { const h = l.s*.7, k = Math.max(1, Math.ceil(l.w/(h*.9))), o = [];
@@ -282,20 +463,29 @@ function computeLabels() {
 function draw() { cancelAnimationFrame(raf); raf = requestAnimationFrame(paint); }
 function paint() {
   if (!regions.length) return;
-  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.fillStyle = OCEAN; ctx.fillRect(0,0,cw,ch);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const og = ctx.createRadialGradient(cw/2, ch/2, 0, cw/2, ch/2, Math.hypot(cw, ch) * .55);
+  og.addColorStop(0, OCEAN_IN); og.addColorStop(1, OCEAN_OUT); ctx.fillStyle = og; ctx.fillRect(0,0,cw,ch);
   ctx.setTransform(dpr*t.k,0,0,dpr*t.k,dpr*t.x,dpr*t.y);
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 1 / t.k; ctx.strokeStyle = "rgba(150,110,240,.07)"; ctx.stroke(gratPath);
+  ctx.lineWidth = 8 / t.k; ctx.strokeStyle = "rgba(110,70,210,.09)"; ctx.stroke(landPath);   // faint coastal glow
+  ctx.lineWidth = 3 / t.k; ctx.strokeStyle = "rgba(150,110,255,.13)"; ctx.stroke(landPath);
   const [vx0,vy0] = t.invert([0,0]), [vx1,vy1] = t.invert([cw,ch]), shade = {};
   const vis = r => !(r.b[1][0]<vx0 || r.b[0][0]>vx1 || r.b[1][1]<vy0 || r.b[0][1]>vy1);
   ctx.lineJoin = "round";
   const rel = t.k / k0;   // how far zoomed in the user is relative to the fully-zoomed-out view (scaleExtent is [k0, k0*40])
   const light = {}, lines = rel >= 6;
   const showCells = rel >= 3;   // subdivisions are pointless clutter near the zoomed-out end; skip them for speed
+  const wp = hasWip ? wipPattern() : null;
+  if (wp) wp.setTransform(new DOMMatrix().scale(1 / (dpr * t.k)).translate(wipPhase * dpr, 0));
   for (const P of parents) {
     if (!vis(P)) continue;
     const one = P.cells.length === 1;
     if (!showCells && !one) {
       ctx.fillStyle = P.domFill;
       ctx.fill(P.p);
+      if (P.domWip && wp) { ctx.fillStyle = wp; ctx.fill(P.p); }
     } else {
       ctx.save(); if (!one) ctx.clip(P.p);
       ctx.lineWidth = .5 / t.k;
@@ -303,20 +493,41 @@ function paint() {
         ctx.fillStyle = r.id && r.id === cur ? (light[r.fill] ||= d3.color(r.fill).brighter(.55).formatHex()) : r.fill;
         ctx.strokeStyle = "rgba(0,0,0,.3)";
         const tg = one ? P.p : r.p;
-        ctx.fill(tg); if (lines && !one) ctx.stroke(tg);
+        ctx.fill(tg);
+        if (r.wip && wp) { ctx.fillStyle = wp; ctx.fill(tg); if (r.id === cur) { ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.fill(tg); } }
+        if (lines && !one) ctx.stroke(tg);
       }
       ctx.restore();
     }
-    ctx.lineWidth = 1.1 / t.k; ctx.strokeStyle = "rgba(4,6,10,.8)"; ctx.stroke(P.p);
+    ctx.lineWidth = 1 / t.k; ctx.strokeStyle = "rgba(5,3,12,.75)"; ctx.stroke(P.p);
   }
-  if (hover) { ctx.save(); ctx.clip(hover.parent.p); ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.fill(hover.p); ctx.restore(); }
+  if (grainPat) {   // terrain texture, clipped to land; anchored to the map so it pans with it
+    ctx.save(); ctx.clip(landPath); ctx.globalCompositeOperation = "overlay";
+    if (reliefCv) { ctx.globalAlpha = 1; ctx.drawImage(reliefCv, 0, 0, 2000, 1000); }   // real hillshade once the elevation tiles load
+    ctx.setTransform(1,0,0,1,0,0);
+    blotchPat.setTransform(new DOMMatrix().translate(t.x*dpr, t.y*dpr).scale(t.k*dpr*700/512));
+    if (!reliefCv) { ctx.globalAlpha = .85; ctx.fillStyle = blotchPat; ctx.fillRect(0, 0, cv.width, cv.height); }
+    grainPat.setTransform(new DOMMatrix().translate(t.x*dpr, t.y*dpr));
+    ctx.globalAlpha = 1; ctx.fillStyle = grainPat; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.restore();
+  }
+  if (borderCv) { ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(borderCv, 0, 0, 2000, 1000); }
+  if (hover) { ctx.save(); ctx.clip(hover.parent.p); ctx.fillStyle = "rgba(205,165,255,.28)"; ctx.fill(hover.p); ctx.restore(); }
+  if (lakePath) {   // lakes sit on top of land, hover and texture
+    ctx.fillStyle = "#070914"; ctx.fill(lakePath);
+    ctx.lineWidth = 1.2 / t.k; ctx.strokeStyle = "rgba(150,110,255,.22)"; ctx.stroke(lakePath);
+  }
   ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
-  for (const l of labels) {
+  for (const l of (labelMode === "off" ? [] : labels)) {
     if (l.s * t.k < 7 || l.x < vx0-200 || l.x > vx1+200 || l.y < vy0-100 || l.y > vy1+100) continue;
     ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.a);
-    ctx.font = `700 ${l.s}px "Source Sans 3", sans-serif`; ctx.letterSpacing = (l.s * .18) + "px";
-    ctx.lineWidth = l.s * .14; ctx.strokeStyle = "rgba(0,0,0,.75)"; ctx.strokeText(l.n, 0, 0);
-    ctx.fillStyle = "#f3f1ff"; ctx.fillText(l.n, 0, 0); ctx.restore();
+    const fi = labelMode === "flags" && flagImg(l.id);
+    if (fi) { const ar = fi.naturalWidth / fi.naturalHeight; let h = l.s * 1.3, w = h * ar; if (w > l.w) { w = l.w; h = w / ar; }
+      ctx.shadowColor = "rgba(0,0,8,.8)"; ctx.shadowBlur = 6 * dpr; ctx.drawImage(fi, -w/2, -h/2, w, h); ctx.restore(); continue; }
+    ctx.font = LABEL_FONT.replace("%s", l.s); ctx.letterSpacing = (l.s * .2) + "px";
+    ctx.shadowColor = "rgba(0,0,8,.9)"; ctx.shadowBlur = 6 * dpr; ctx.shadowOffsetY = dpr;
+    ctx.fillStyle = "rgba(246,243,255,.94)";
+    ctx.fillText(l.n, l.s * .1, 0); ctx.restore();
   }
   drawRedactions();
 }
@@ -343,18 +554,26 @@ function drawRedactions() {
   }
 }
 function resize() {
-  const m = $("map"); dpr = window.devicePixelRatio || 1; cw = m.clientWidth; ch = m.clientHeight;
+  const m = $("stage"), ow = cw, oh = ch, ok = k0, ot = t;
+  const w = m.clientWidth, h = m.clientHeight; if (!w || !h) return;
+  dpr = window.devicePixelRatio || 1; cw = w; ch = h;
   cv.width = cw*dpr; cv.height = ch*dpr;
   k0 = Math.min(cw/2000, ch/1000);
   zoom.extent([[0,0],[cw,ch]]).scaleExtent([k0, k0*40]).translateExtent([[0,0],[2000,1000]]);
-  sel.call(zoom.transform, d3.zoomIdentity.translate((cw-2000*k0)/2, (ch-1000*k0)/2).scale(k0));
+  let tr = d3.zoomIdentity.translate((cw-2000*k0)/2, (ch-1000*k0)/2).scale(k0);
+  if (ow && oh && ot.k > ok * 1.001) {   // already zoomed in: keep the same map point centred at the same relative zoom
+    const k = k0 * ot.k / ok, mx = (ow/2 - ot.x) / ot.k, my = (oh/2 - ot.y) / ot.k;
+    tr = d3.zoomIdentity.translate(cw/2 - mx*k, ch/2 - my*k).scale(k);
+  }
+  sel.call(zoom.transform, tr);
 }
-let rz; new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => data && resize()); }).observe($("map"));
+let rz; new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => data && resize()); }).observe($("stage"));
 
 /* ---------- interaction ---------- */
 function pick(mx, my) {
   const [x, y] = t.invert([mx, my]); ctx.setTransform(1,0,0,1,0,0);
   if (!EDIT && inRedaction(x, y)) return null;
+  if (lakePath && ctx.isPointInPath(lakePath, x, y)) return null;
   for (let i = regions.length-1; i >= 0; i--) {
     const r = regions[i], b = r.b;
     if (x<b[0][0] || x>b[1][0] || y<b[0][1] || y>b[1][1]) continue;
@@ -369,8 +588,8 @@ cv.onpointermove = e => {
   if (r !== hover) { hover = r; draw(); }
   if (!r) { tip.style.display = "none"; return; }
   const f = data.factions[data.claims[r.key]];
-  tip.innerHTML = `<b>${esc(r.name)}</b><br>${f ? esc(f.name) : "Unclaimed"}`;
-  tip.style.display = "block"; tip.style.left = Math.min(e.offsetX+14, cw-160) + "px"; tip.style.top = (e.offsetY+14) + "px";
+  tip.innerHTML = `<b>${esc(dn(r))}</b><br>${f ? `<span class="chip${isWip(f) ? " wipSw" : ""}" style="background:${esc(f.color)}"></span>${esc(f.name)}` : '<span class="who">Unclaimed</span>'}`;
+  tip.style.display = "block"; tip.style.left = Math.max(4, Math.min(e.offsetX+14, cw-tip.offsetWidth-6)) + "px"; tip.style.top = Math.max(4, Math.min(e.offsetY+14, ch-tip.offsetHeight-6)) + "px";
 };
 cv.onpointerleave = () => { hover = null; $("tip").style.display = "none"; draw(); };
 cv.onclick = e => {
@@ -382,7 +601,8 @@ cv.onclick = e => {
     redacting = false; $("redactBtn").classList.remove("on");
     return changed();
   }
-  const r = pick(e.offsetX, e.offsetY); if (!r) return;
+  const r = pick(e.offsetX, e.offsetY);
+  if (!r) { if (!EDIT && (picked || cur)) { picked = null; cur = null; renderInfo(); renderLegend(); draw(); } return; }
   if (EDIT) {
     if (placing) { const [x,y] = t.invert([e.offsetX, e.offsetY]); data.labels[cur] = proj.invert([x,y]); placing = false; $("place").classList.remove("on"); return changed(); }
     if (scope === "cell") {
@@ -410,7 +630,8 @@ function renderSiteBanner() {
 
 /* ---------- panel ---------- */
 const count = id => regions.reduce((n, r) => data.claims[r.key] === id ? n + 1 : n, 0);
-function renderInfo() {
+function renderInfo() { _renderInfo(); $("card").classList.toggle("hide", !EDIT && !cur && !picked); saveHash(); }
+function _renderInfo() {
   const el = $("info"), f = cur && data.factions[cur];
   if (EDIT) {
     if (!f) { el.innerHTML = '<p class="hint">Eraser active: click territory to unclaim it. Pick a faction below to paint with it.</p>'; return; }
@@ -426,14 +647,14 @@ function renderInfo() {
       changed(false); });
     return;
   }
-  if (!f) { el.innerHTML = picked ? `<h2>${esc(picked.name)}</h2><p class="hint">Unclaimed territory.</p>` : '<p class="hint">Click a claimed territory to see who holds it.</p>'; return; }
+  if (!f) { el.innerHTML = picked ? `<h2>${esc(dn(picked))}</h2><p class="hint">Unclaimed territory.</p>` : '<p class="hint">Click a claimed territory to see who holds it.</p>'; return; }
   const rows = [["ruler","Leader"],["capital","Capital"],["gov","Government"],["bloc","Bloc"]].filter(([k]) => f[k]);
-  el.innerHTML = `<div class="banner" style="background:${esc(f.color)}"></div>` +
-    (f.emblem ? `<img class="emblem" src="${esc(f.emblem)}" alt="${esc(f.name)} emblem" onerror="this.style.display='none'">` : "") +
-    `<h2>${esc(f.name)}</h2>` +
-    (picked ? `<p class="hint">Selected: ${esc(picked.name)}</p>` : "") +
-    `<dl>${rows.map(([k,l]) => `<dt>${l}</dt><dd>${esc(f[k])}</dd>`).join("")}<dt>Holds</dt><dd>${count(cur)} territories</dd></dl>` +
-    (f.desc ? `<p class="desc">${esc(f.desc)}</p>` : "");
+  el.innerHTML = (isWip(f) ? '<div class="banner wipSw"></div>' : `<div class="banner" style="background:${esc(f.color)}"></div>`) +
+    `<div class="idhead">` + (f.emblem ? `<img class="emblem" src="${esc(f.emblem)}" alt="${esc(f.name)} emblem" onerror="this.style.display='none'">` : "") +
+    `<div><h2>${esc(f.name)}</h2>` + (picked ? `<p class="hint">Selected: ${esc(dn(picked))}</p>` : "") + `</div></div>` +
+    `<dl>${rows.map(([k,l]) => `<dt>${l}</dt><dd>${esc(f[k])}</dd>`).join("")}${isWip(f) ? "<dt>Status</dt><dd>In progress, being claimed</dd>" : ""}<dt>Holds</dt><dd>${count(cur)} territories</dd></dl>` +
+    (f.desc ? `<p class="desc">${esc(f.desc)}</p>` : "") + `<button class="focusbtn" id="focusBtn">Zoom to territory</button>`;
+  $("focusBtn").onclick = () => zoomTo(cur);
 }
 function renderLegend() {
   const n = {}; let claimed = 0;
@@ -442,12 +663,12 @@ function renderLegend() {
     .sort((a,b) => data.factions[a].name.localeCompare(data.factions[b].name));
   const total = regions.length;
   $("legend").innerHTML =
-    `<div style="padding:.5rem 1.1rem 0"><input id="legendSearch" placeholder="Filter factions…" value="${esc(legendFilter)}"></div>` +
-    `<p class="hint" style="padding:0 1.1rem">${claimed} / ${total} cells claimed (${(100*claimed/total).toFixed(1)}%)</p>` +
+    `<div class="lhead"><input id="legendSearch" placeholder="Filter factions…" value="${esc(legendFilter)}">` +
+    `<p class="hint" style="margin:.45rem 0 0">${claimed} / ${total} cells claimed (${(100*claimed/total).toFixed(1)}%)</p></div><div class="list">` +
     (EDIT ? `<div class="row${cur?"":" on"}" data-id=""><i style="background:${LAND}"></i>Unclaimed / eraser</div>` : "") +
-    ids.map(i => `<div class="row${i===cur?" on":""}" data-id="${i}">${data.factions[i].emblem?`<img class="rowEmblem" src="${esc(data.factions[i].emblem)}" alt="" onerror="this.style.display='none'">`:""}<i style="background:${esc(data.factions[i].color)}"></i>${esc(data.factions[i].name)}<b>${n[i]||0}</b></div>`).join("");
-  $("legend").querySelectorAll(".row").forEach(r => r.onclick = () => {
-    cur = r.dataset.id || null; picked = null; renderInfo(); renderLegend(); draw(); if (cur && !EDIT) zoomTo(cur); });
+    ids.map(i => `<div class="row${i===cur?" on":""}" data-id="${i}" tabindex="0" role="button">${data.factions[i].emblem?`<img class="rowEmblem" src="${esc(data.factions[i].emblem)}" alt="" onerror="this.style.display='none'">`:""}${isWip(data.factions[i]) ? '<i class="wipSw"></i>' : `<i style="background:${esc(data.factions[i].color)}"></i>`}${esc(data.factions[i].name)}${isWip(data.factions[i]) ? '<em class="wipTag">In progress</em>' : ""}<b>${n[i]||0}</b></div>`).join("") + "</div>";
+  $("legend").querySelectorAll(".row").forEach(r => { r.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); r.click(); } }; r.onclick = () => {
+    cur = r.dataset.id || null; picked = null; renderInfo(); renderLegend(); draw(); if (cur && !EDIT) zoomTo(cur); }; });
   const s = $("legendSearch"); if (s) { s.oninput = () => { legendFilter = s.value.toLowerCase(); renderLegend();
     const s2 = $("legendSearch"); s2.focus(); s2.setSelectionRange(s2.value.length, s2.value.length); }; }
 }
@@ -455,8 +676,10 @@ function zoomTo(id) {
   const L = regions.filter(r => data.claims[r.key] === id); if (!L.length) return;
   let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
   L.forEach(r => { x0 = Math.min(x0,r.b[0][0]); y0 = Math.min(y0,r.b[0][1]); x1 = Math.max(x1,r.b[1][0]); y1 = Math.max(y1,r.b[1][1]); });
-  const k = Math.max(k0, Math.min(Math.min(cw/(x1-x0), ch/(y1-y0)) * .6, k0*40));
-  sel.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(cw/2, ch/2).scale(k).translate(-(x0+x1)/2, -(y0+y1)/2));
+  const wide = innerWidth > 760, dk = $("dock"), cd = $("card");   // centre on the part of the map not covered by the panels
+  const dx = wide ? ((dk.offsetWidth + 14) - (cd.classList.contains("hide") ? 0 : cd.offsetWidth + 14)) / 2 : 0;
+  const k = Math.max(k0, Math.min(Math.min((cw - Math.abs(dx)*2)/(x1-x0), ch/(y1-y0)) * .6, k0*40));
+  sel.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(cw/2 + dx, ch/2).scale(k).translate(-(x0+x1)/2, -(y0+y1)/2));
 }
 
 /* ---------- edit tools ---------- */
@@ -541,17 +764,150 @@ function buildTools() {
     a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type: "application/json"}));
     a.download = "claims.json"; a.click(); };
   $("imp").onclick = () => $("file").click();
-  $("file").onchange = async e => { try { data = norm(JSON.parse(await e.target.files[0].text())); cur = null; renderInfo(); changed(); } catch (x) { alert("That file isn't valid claims JSON."); } };
+  $("file").onchange = async e => { const fl = e.target.files[0]; e.target.value = ""; if (!fl) return; try { data = norm(JSON.parse(await fl.text())); cur = null; renderInfo(); changed(); } catch (x) { alert("That file isn't valid claims JSON."); } };
   $("fresh").onclick = async () => { if (!confirm("Discard your draft and reload claims.json?")) return;
     try { localStorage.removeItem("claimsDraft"); } catch (e) {} data = await loadClaims(); cur = null; renderInfo(); changed(); history = []; hIndex = -1; snapshot(); updateUndoBtns(); };
   renderRedactList(); renderMergeOptions(); updateUndoBtns();
-  document.onkeydown = e => { if (!EDIT) return; const z = e.key.toLowerCase() === "z";
+  document.onkeydown = e => { if (!EDIT || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return; const z = e.key.toLowerCase() === "z";
     if ((e.ctrlKey||e.metaKey) && z && !e.shiftKey) { e.preventDefault(); undo(); }
     else if ((e.ctrlKey||e.metaKey) && ((z && e.shiftKey) || e.key.toLowerCase()==="y")) { e.preventDefault(); redo(); }
     else if (e.key === "Escape") { placing = false; redacting = false; $("place")?.classList.remove("on"); $("redactBtn")?.classList.remove("on"); } };
 }
 
-init();
+$("zin").onclick = () => sel.transition().duration(250).call(zoom.scaleBy, 1.7);
+$("zout").onclick = () => sel.transition().duration(250).call(zoom.scaleBy, 1/1.7);
+$("zhome").onclick = () => sel.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate((cw-2000*k0)/2, (ch-1000*k0)/2).scale(k0));
+$("dockTgl").onclick = () => $("dock").classList.toggle("min");
+$("cardX").onclick = () => { picked = null; cur = null; renderInfo(); renderLegend(); draw(); };
+if (innerWidth <= 760) $("dock").classList.add("min");
+/* faction borders: rasterise who owns what, find the edges, blur them into an inner glow */
+function boxBlur(src, W, H, R) {
+  const t = new Uint8Array(W*H), out = new Uint8Array(W*H), n = 2*R + 1, cl = (v, m) => v < 0 ? 0 : v > m ? m : v;
+  for (let y = 0; y < H; y++) { let a = 0; const o = y*W; for (let x = -R; x <= R; x++) a += src[o + cl(x, W-1)];
+    for (let x = 0; x < W; x++) { t[o+x] = a/n; a += src[o + cl(x+R+1, W-1)] - src[o + cl(x-R, W-1)]; } }
+  for (let x = 0; x < W; x++) { let a = 0; for (let y = -R; y <= R; y++) a += t[cl(y, H-1)*W + x];
+    for (let y = 0; y < H; y++) { out[y*W+x] = a/n; a += t[cl(y+R+1, H-1)*W + x] - t[cl(y-R, H-1)*W + x]; } }
+  return out;
+}
+function buildBorders() {
+  if (!regions.length) return;
+  const S = 2, W = 2000*S, H = 1000*S, oc = document.createElement("canvas"); oc.width = W; oc.height = H;
+  const o = oc.getContext("2d", { willReadFrequently: true }); o.scale(S, S);
+  const ids = Object.keys(data.factions), idx = {}; ids.forEach((id, i) => idx[id] = i + 1);
+  for (const P of parents) { o.save(); o.clip(P.p);
+    for (const r of P.cells) { const n = (r.id && idx[r.id]) || 65535; o.fillStyle = `rgb(${n >> 8},${n & 255},0)`; o.fill(P.cells.length === 1 ? P.p : r.p); }
+    o.restore(); }
+  const d = o.getImageData(0, 0, W, H).data, own = new Uint16Array(W*H), K = 3;
+  for (let i = 0, j = 0; i < own.length; i++, j += 4) if (d[j+3] === 255) { const n = (d[j] << 8) | d[j+1]; own[i] = (n === 65535 || (n >= 1 && n <= ids.length)) ? n : 0; }
+  const e = new Uint8Array(W*H);
+  for (let y = K; y < H-K; y++) for (let x = K; x < W-K; x++) { const i = y*W + x, a = own[i]; if (!a || a === 65535) continue;
+    const b1 = own[i+K], b2 = own[i+K*W], b3 = own[i-K], b4 = own[i-K*W];
+    if ((b1 && b1 !== a) || (b2 && b2 !== a) || (b3 && b3 !== a) || (b4 && b4 !== a)) e[i] = 255; }
+  const g = boxBlur(boxBlur(e, W, H, 8), W, H, 8), img = new ImageData(W, H), od = img.data;
+  const cols = ids.map(id => d3.rgb(d3.color(data.factions[id].color).brighter(.45)));
+  for (let i = 0, j = 0; i < own.length; i++, j += 4) { const a = own[i]; if (!a || a === 65535) continue;
+    const c = cols[a-1]; od[j] = c.r; od[j+1] = c.g; od[j+2] = c.b; od[j+3] = Math.min(150, g[i] * 6); }   // glow only: the crisp edge is the vector border line already drawn
+
+  const bc = document.createElement("canvas"); bc.width = W; bc.height = H; bc.getContext("2d").putImageData(img, 0, 0);
+  borderCv = bc; draw();
+}
+
+/* terrain relief: Terrarium elevation tiles -> hillshade + high-ground tint, used as an overlay on land */
+async function loadRelief() {
+  const N = 8, T = 256, mc = document.createElement("canvas"); mc.width = mc.height = N*T;
+  const mx = mc.getContext("2d", { willReadFrequently: true }); let ok = 0;
+  await Promise.all([...Array(N*N)].map((_, i) => new Promise(res => { const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => { mx.drawImage(im, (i % N)*T, Math.floor(i / N)*T); ok++; res(); }; im.onerror = res;
+    im.src = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/3/${i % N}/${Math.floor(i / N)}.png`; })));
+  if (ok < N*N*.9) return;   // tiles blocked or offline: keep the grain fallback
+  const px = mx.getImageData(0, 0, N*T, N*T).data, W = 1440, H = 720, E = new Float32Array(W*H);
+  for (let y = 0; y < H; y++) { const lat = 90 - (y + .5)/H*180; if (Math.abs(lat) >= 85) continue;
+    const my = Math.floor((1 - Math.log(Math.tan(Math.PI/4 + lat*Math.PI/360))/Math.PI)/2 * N*T);
+    for (let x = 0; x < W; x++) { const j = (my*N*T + Math.floor((x + .5)/W*N*T)) * 4; E[y*W+x] = px[j]*256 + px[j+1] + px[j+2]/256 - 32768; } }
+  const rc = document.createElement("canvas"); rc.width = W; rc.height = H;
+  const rx = rc.getContext("2d"), im = rx.createImageData(W, H), d = im.data, L = [-.55, -.55, .63];   // light from the north-west
+  for (let y = 1; y < H-1; y++) { const lat = 90 - (y + .5)/H*180, dx = 2*111320*.25*Math.max(.05, Math.cos(lat*Math.PI/180)), dy = 2*111320*.25;
+    for (let x = 1; x < W-1; x++) { const i = y*W + x, z = E[i]; if (z <= 0) continue;
+      const ex = 8*(E[i+1] - E[i-1])/dx, ey = 8*(E[i+W] - E[i-W])/dy, sh = (-ex*L[0] - ey*L[1] + L[2])/Math.hypot(ex, ey, 1) - L[2];
+      const k = Math.max(-1, Math.min(1, sh*2.4)), hi = Math.max(0, Math.min(1, (z - 600)/4500));
+      const w = (k > 0 ? k*150 : 0) + hi*55, b = k < 0 ? -k*170 : 0, j = i*4;
+      d[j] = d[j+1] = d[j+2] = w > b ? 255 : 0; d[j+3] = Math.abs(w - b); } }
+  rx.putImageData(im, 0, 0); reliefCv = rc; draw();
+}
+
+/* share links: #f=<faction>&v=<centreX>,<centreY>,<zoom> */
+function viewHash() {
+  const p = [], k = t.k / k0; if (cur) p.push("f=" + encodeURIComponent(cur));
+  if (k > 1.01) p.push("v=" + [Math.round((cw/2 - t.x)/t.k), Math.round((ch/2 - t.y)/t.k), +k.toFixed(2)].join(","));
+  return p.length ? "#" + p.join("&") : "";
+}
+function saveHash() {
+  if (EDIT || !data) return; clearTimeout(hashT);
+  hashT = setTimeout(() => { try { window.history.replaceState(null, "", location.pathname + location.search + viewHash()); } catch (e) {} }, 300);
+}
+function applyHash() {
+  const q = new URLSearchParams(location.hash.slice(1)), f = q.get("f"), v = (q.get("v") || "").split(",").map(Number);
+  if (f && data.factions[f]) cur = f;
+  if (v.length === 3 && v.every(isFinite)) { const k = Math.min(k0*40, Math.max(k0, k0*v[2]));
+    sel.call(zoom.transform, d3.zoomIdentity.translate(cw/2 - v[0]*k, ch/2 - v[1]*k).scale(k)); }
+  else if (cur) zoomTo(cur);
+  renderInfo(); renderLegend(); draw();
+}
+function flagImg(id) {
+  const f = data.factions[id]; if (!f || !f.emblem) return null;
+  let c = flagCache[f.emblem];
+  if (!c) { c = flagCache[f.emblem] = new Image(); c.crossOrigin = "anonymous"; c.onload = () => draw(); c.onerror = () => { c.bad = true; }; c.src = f.emblem; }
+  return c.complete && c.naturalWidth && !c.bad ? c : null;
+}
+const LBL = ["names", "flags", "off"], LBLN = { names: "Names", flags: "Flags", off: "Off" };
+$("lblBtn").onclick = () => { labelMode = LBL[(LBL.indexOf(labelMode) + 1) % 3]; $("lblBtn").textContent = "Labels: " + LBLN[labelMode]; draw(); };
+$("shareBtn").onclick = async () => {
+  const u = location.href.split(/[?#]/)[0] + viewHash(), b = $("shareBtn");
+  try { await navigator.clipboard.writeText(u); b.textContent = "Link copied"; setTimeout(() => b.textContent = "Share", 1400); } catch (e) { prompt("Copy this link:", u); }
+};
+$("pngBtn").onclick = () => {
+  const W = cv.width, H = cv.height, bh = Math.round(34*dpr), c = document.createElement("canvas"); c.width = W; c.height = H + bh;
+  const x = c.getContext("2d"); x.drawImage(cv, 0, 0); x.fillStyle = "#0a0716"; x.fillRect(0, H, W, bh);
+  x.fillStyle = "#e9e5f6"; x.font = `600 ${12*dpr}px "Barlow Semi Condensed", sans-serif`; x.letterSpacing = (3*dpr) + "px"; x.textBaseline = "middle";
+  x.fillText((CONFIG.title + " \u00b7 " + CONFIG.year).toUpperCase(), 16*dpr, H + bh/2);
+  try { c.toBlob(b => { const a = document.createElement("a"); a.href = URL.createObjectURL(b);
+      a.download = CONFIG.title.replace(/\W+/g, "-").toLowerCase() + "-" + CONFIG.year + ".png"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }); }
+  catch (e) { alert("Couldn't export the image. A flag from another site may be blocking it; set Labels to Names and try again."); }
+};
+
+/* ---------- changelog popup (own json, once per visitor) ---------- */
+// changelog.json: { "id": "2026-10-04", "title": "What's new", "date": "4 Oct 2026",
+//   "intro": "optional text", "sections": [ { "heading": "Added", "items": ["..."] } ] }
+// A visitor sees it once per "id". Bump the id for a new changelog. Set "enabled": false to hide it.
+// Add ?changelog to the URL to preview it any time (doesn't count as seen).
+async function showChangelog() {
+  const force = new URLSearchParams(location.search).has("changelog");
+  let c; try { const r = await fetch(CONFIG.changelogUrl + "?v=" + Date.now()); if (!r.ok) return; c = await r.json(); } catch (e) { return; }
+  if (!c || c.enabled === false) return;
+  const id = String(c.id ?? c.version ?? c.title ?? "");
+  if (!id) return;
+  let seen = ""; try { seen = localStorage.getItem("changelogSeen") || ""; } catch (e) {}
+  if (seen === id && !force) return;
+  const secs = c.sections || (c.items ? [{ items: c.items }] : []);
+  $("clogDate").textContent = c.date || "";
+  $("clogDate").hidden = !c.date;
+  $("clogTitle").textContent = c.title || "What's new";
+  $("clogBody").innerHTML = (c.intro ? "<p>" + esc(c.intro) + "</p>" : "") + secs.map(s =>
+    (s.heading ? "<h4>" + esc(s.heading) + "</h4>" : "") + "<ul>" + (s.items || []).map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>").join("");
+  const box = $("clog"), prev = document.activeElement;
+  const close = () => { box.hidden = true; document.removeEventListener("keydown", onKey, true); if (prev && prev.focus) prev.focus(); };
+  const onKey = e => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  if (!force) { try { localStorage.setItem("changelogSeen", id); } catch (e) {} }
+  $("clogOk").onclick = close;
+  box.onclick = e => { if (e.target === box) close(); };
+  document.addEventListener("keydown", onKey, true);
+  box.hidden = false; $("clogOk").focus();
+}
+
+let lastTick = 0;
+(function tick(ts) { if (hasWip && !REDUCED && ts - lastTick > 45) { lastTick = ts; wipPhase = (ts * .022) % WIP_S; draw(); } requestAnimationFrame(tick); })(0);
+init().then(() => loadRelief().catch(() => {}));
+showChangelog();
 </script>
 </body>
 </html>
