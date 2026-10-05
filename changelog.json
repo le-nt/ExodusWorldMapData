@@ -8,10 +8,11 @@
     {
       "heading": "New look",
       "items": [
+        "The fire rises.",
         "Redid the whole map UI. The map now takes up the entire screen, with panels on top, a purple grid frame and new fonts.",
         "Faction list has its own panel now, and you can hide it if you want more space for the map.",
         "Click a territory to see its info, click somewhere else to close it.",
-        "The Great Lakes are finally actual water, along with the other lakes. Oceans and coastlines also have a bit of glow now."
+        "The Great Lakes are finally actual water (I know you guys have been waiting for this for ages, best update ever am I right", along with the other lakes. Oceans and coastlines also have a bit of glow now."
       ]
     },
     {
@@ -19,9 +20,9 @@
       "items": [
         "Mountains and higher ground now look different from flat land.",
         "Faction borders now have a glow.",
-        "Added a labels button so you can switch between names, flags or no labels.",
+        "Added a labels button so you can switch between names, flags or no labels, despite this most faction flags are fucking broken.",
         "Added a share button that copies a link to your current view, or to a specific faction.",
-        "You can now save your current map view as a PNG.",
+        "You can now save your current map view as a PNG, it's a wee buggy though.",
         "Added zoom buttons, a zoom readout and a button to zoom straight to a territory from faction cards.",
         "Land being claimed now has those moving stripe things."
       ]
@@ -30,7 +31,6 @@
       "heading": "Tweaked",
       "items": [
         "Hovering over factions now shows their colour, and region names are shown instead of cell numbers.",
-        "Removed the pan and zoom instructions from the bottom bar because you can probably figure that out."
       ]
     }
   ]
