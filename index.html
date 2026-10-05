@@ -371,10 +371,10 @@ async function init() {
       loadClaims()
     ]);
     data = d;
-    const states = st ? st.features.filter(f => f.properties.admin !== "Antarctica") : [];
+    const states = st ? st.features : [];
     const have = new Set(states.map(f => f.properties.admin));
     topoFeatures(w, w.objects.countries)
-      .filter(f => f.properties.name !== "Antarctica" && !have.has(f.properties.name))
+      .filter(f => !have.has(f.properties.name))
       .forEach(f => parents.push(mk(f, "c:" + f.properties.name, f.properties.name, f.properties.name)));
     states.forEach(f => { const p = f.properties;
       parents.push(mk(f, "s:" + (p.adm1_code || p.name + p.admin), p.name + ", " + p.admin, p.admin)); });
