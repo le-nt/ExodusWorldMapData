@@ -373,11 +373,6 @@ async function init() {
     data = d;
     // Agartha is a custom fictional continent in the South Pacific. Its polygon is
     // real map geometry (not an overlay), so it gets cells, borders, picking and claims.
-    data.factions.agartha ||= {
-      name: "Agartha", color: "#8057c8", emblem: "", ruler: "The Sovereign",
-      capital: "Shambhala", gov: "Hidden subterranean civilization", bloc: "",
-      desc: "A secluded fictional continent in the South Pacific, home to the hidden realm of Agartha."
-    };
     const states = st ? st.features : [];
     const have = new Set(states.map(f => f.properties.admin));
     topoFeatures(w, w.objects.countries)
